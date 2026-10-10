@@ -1,0 +1,638 @@
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f6f5;color:#1e2522}header{background:#fff;display:flex;justify-content:space-between;align-items:center;padding:12px 24px;border-bottom:1px solid #dfe5e1}.brand img{height:58px;max-width:260px;object-fit:contain}.headright{text-align:right;font-size:12px;line-height:1.6}.appnav{display:flex;gap:8px;padding:10px 24px;background:#24312c;overflow:auto}.appnav button{white-space:nowrap}.navbtn,.toolbar button,.actions button,.section-title button,.order-actions button,.signature-actions button,.address-actions button{border:1px solid #cbd4cf;background:#fff;border-radius:7px;padding:9px 12px;cursor:pointer;font-weight:600}.navbtn{color:#fff;background:#34433d;border-color:#4b5c54}.navbtn.active{background:#2d7b54}.primary{background:#2d7b54!important;color:#fff!important;border-color:#2d7b54!important}.danger{color:#9b2c2c}.appview{max-width:1120px;margin:20px auto;padding:0 16px}.card{background:#fff;border:1px solid #dce3df;border-radius:10px;padding:16px;margin-bottom:14px}.section-title{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.section-title h2{margin:0;font-size:18px}.subtext,.photohelp,.hint{color:#66736d;font-size:13px;margin:4px 0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid label{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:13px}.wide{grid-column:1/-1}input,select,textarea{font:inherit;border:1px solid #cbd4cf;border-radius:7px;padding:10px;background:#fff;width:100%;min-width:0}textarea{resize:vertical}.address-actions{display:flex;align-items:center;gap:8px;margin-top:6px}.address-actions span{font-size:13px}.orderbar{display:flex;justify-content:space-between;gap:20px}.orderbar label{display:flex;gap:7px;align-items:center;font-size:13px}.rowhead,.employee-columns{display:grid;gap:8px;font-size:12px;color:#66736d;font-weight:700;margin-bottom:5px}.mathead,.setuphead{grid-template-columns:minmax(180px,1fr) 130px 120px 42px}.employee-columns,.employee-row{grid-template-columns:1.4fr 100px 100px 110px 130px 42px}.employee-row,.matrow,.setuprow,.masterrow{display:grid;gap:8px;align-items:center;margin:7px 0}.matrow select,.setuprow select{min-width:0}.matrow button,.setuprow button,.employee-row button,.masterrow button{border:0;background:#f1f3f2;border-radius:6px;height:40px;cursor:pointer}.employee-row .hours{background:#f4f6f5}.signature-grid{display:grid;grid-template-columns:130px 1fr 1fr;gap:12px}.signature-block{border:1px solid #dce3df;border-radius:8px;padding:10px}.signature-block canvas{width:100%;height:160px;background:#fff;border-bottom:1px solid #cbd4cf;touch-action:none}.signature-actions{display:flex;gap:6px;margin-top:6px}.filebutton{display:inline-flex!important;align-items:center;background:#fff;border:1px solid #cbd4cf;border-radius:7px;padding:9px 12px;cursor:pointer}.filebutton input{display:none}.photo-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}.photoitem{position:relative;border:1px solid #dce3df;border-radius:8px;overflow:hidden;background:#f7f8f7}.photoitem img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}.photoitem button{position:absolute;right:5px;top:5px;border:0;border-radius:50%;width:30px;height:30px;background:#fff;color:#a22;cursor:pointer;font-size:18px}.photoitem small{display:block;padding:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.storage{margin:14px 0;padding:12px;background:#f6f8f7;border:1px solid #dce3df;border-radius:8px}.storage-top{display:flex;justify-content:space-between;gap:12px;font-size:13px}.bar{height:12px;background:#e3e8e5;border-radius:99px;overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;width:0;background:#2d7b54}.storage small{color:#66736d}.order-list{display:grid;gap:10px}.order-card{border:1px solid #dce3df;border-radius:9px;padding:13px;background:#fbfcfb}.order-main{display:flex;justify-content:space-between;gap:15px}.order-card h3{margin:3px 0 8px;font-size:17px}.order-card p{margin:4px 0;color:#4f5b56;font-size:13px}.order-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.eyebrow{font-size:11px;text-transform:uppercase;color:#2d7b54;font-weight:800;letter-spacing:.05em}.masterhead{display:grid;gap:8px;color:#66736d;font-size:12px;font-weight:700;margin:10px 0 5px}.materialmasterhead{grid-template-columns:1fr 180px 42px}.setupmasterhead{grid-template-columns:1fr 180px 42px}.masterrow{grid-template-columns:1fr 180px 42px}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.voice-row{display:grid;grid-template-columns:1fr auto;gap:8px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.empty-state{color:#66736d;text-align:center;padding:24px}.appointment{border-left:4px solid #2d7b54}
+/* Final preview refinements: travel costs, employee overview and prominent speech input. */
+.voice-row{display:grid;grid-template-columns:1fr 180px;gap:12px;align-items:stretch}
+.voice-row textarea{min-height:150px;font-size:17px}
+.voice-button{min-height:64px;font-size:17px;font-weight:800;border:0;border-radius:10px;background:#2d7b54;color:#fff;cursor:pointer;padding:12px 16px}
+.employee-mobile-columns{display:none}
+.employee-summary{margin-top:10px;padding:10px 12px;background:#f1f5f2;border:1px solid #dce3df;border-radius:8px;text-align:right;font-weight:800;color:#24312c}
+.travel-card{border-left:4px solid #6b7b73}
+@media(max-width:720px){
+header{padding:10px 14px}.headright{display:none}.brand img{height:48px}.appnav{padding:8px 12px}.appview{padding:0 10px;margin:12px auto}
+.grid,.signature-grid{grid-template-columns:1fr}.wide{grid-column:auto}
+
+/* Mitarbeiter: kompakte Übersicht wie in der bisherigen Version */
+.employee-columns{display:none}
+.employee-mobile-columns{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;font-size:11px;color:#66736d;font-weight:800;margin:4px 0 3px}
+.employee-mobile-columns:before{content:'Mitarbeiter';grid-column:1/-1;font-size:12px}
+.employee-row{grid-template-columns:1fr 1fr 1fr 1fr 42px;gap:7px;margin:0 0 10px}
+.employee-row .ename{grid-column:1/-1;grid-row:1}
+.employee-row .beg{grid-column:1;grid-row:2}.employee-row .end{grid-column:2;grid-row:2}.employee-row .pause{grid-column:3;grid-row:2}.employee-row .hours{grid-column:4;grid-row:2}
+.employee-row .ename:before{content:''}
+.employee-row button{grid-column:5;grid-row:2;height:40px}
+.employee-row .ename,.employee-row .beg,.employee-row .end,.employee-row .pause,.employee-row .hours{height:44px}
+.employee-row .ename::placeholder{color:#9da4a1}
+.employee-summary{margin-top:4px}
+.voice-row{grid-template-columns:1fr}.voice-button{min-height:68px;font-size:19px}.voice-row textarea{min-height:180px;font-size:18px}
+.mathead,.setuphead{display:none}.matrow,.setuprow{grid-template-columns:1fr 100px 90px 42px}.order-main{flex-direction:column}.order-actions{justify-content:flex-start}
+.masterhead{display:none}.masterrow{grid-template-columns:1fr 100px 42px}.orderbar{align-items:flex-start;flex-direction:column}.storage-top{flex-direction:column}}
+@page{size:A4 portrait;margin:0}
+@media print{
+  html,body{width:210mm!important;height:297mm!important;margin:0!important;padding:0!important;background:#fff!important;color:#17211c!important;font-family:Arial,Helvetica,sans-serif!important}
+  body{font-size:6.2pt!important}
+  header{display:grid!important;grid-template-columns:50mm 1fr 42mm!important;align-items:center!important;gap:3mm!important;box-sizing:border-box!important;width:194mm!important;height:19mm!important;margin:7mm 8mm 0!important;padding:0 0 2mm!important;border-bottom:1.1mm solid #2d7b54!important;background:#fff!important}
+  .brand img{height:11mm!important;width:auto!important;max-width:48mm!important;object-fit:contain!important}
+  .headright{font-size:4.8pt!important;line-height:1.12!important;color:#486052!important;position:relative!important}
+  .headright b.print-service-title{position:absolute!important;right:0!important;top:0!important;text-align:right!important;color:#1f7b50!important;font-size:7.4pt!important;line-height:1.03!important}
+  .appnav,.actions,.toolbar,.order-actions,.storage,.appointment,.orderbar,.orderbar select,.address-actions,.signature-actions,.photos-card .section-title .filebutton,.photohelp,.subtext,.voice-button,.master-card{display:none!important}
+  main{margin:0!important;padding:0!important}
+  .appview{max-width:none!important;margin:0!important;padding:0!important}
+  #view-auftrag{display:block!important}
+  .print-page{display:block!important;width:194mm!important;margin:1.5mm 8mm 0!important;padding:0!important}
+  .card{box-sizing:border-box!important;background:#fff!important;border:1px solid #c9d0cc!important;border-radius:0!important;box-shadow:none!important;margin:0 0 1.1mm!important;padding:1.1mm 1.5mm!important;break-inside:avoid!important;page-break-inside:avoid!important}
+  .card h2{box-sizing:border-box!important;background:#187a4d!important;color:#fff!important;font-size:6.7pt!important;line-height:4.2mm!important;height:4.2mm!important;padding:0 1.3mm!important;margin:-1.1mm -1.5mm .8mm!important;font-weight:700!important}
+  .grid{gap:0!important}
+  .grid label{font-size:4.55pt!important;line-height:1.05!important;gap:.35mm!important}
+  input,select,textarea{box-sizing:border-box!important;font-size:5.5pt!important;line-height:1.05!important;padding:.55mm .8mm!important;border:1px solid #b9c1bd!important;border-radius:0!important;min-height:0!important;margin:0!important;height:4.6mm!important;background:#fff!important}
+  textarea{height:9.5mm!important;resize:none!important}
+  .grid label.wide{grid-column:1/-1!important}
+  .voice-row{display:block!important}
+  .employee-columns{display:grid!important;grid-template-columns:1.6fr .72fr .72fr .8fr .86fr 0!important;gap:0!important;font-size:4.55pt!important;line-height:1!important;margin:0!important;background:#e8ecea!important;border:1px solid #c5ccc8!important;padding:.75mm!important}
+  .employee-mobile-columns{display:none!important}
+  .employee-row{grid-template-columns:1.6fr .72fr .72fr .8fr .86fr 0!important;gap:0!important;margin:0!important}
+  .employee-row input{height:4.3mm!important;font-size:5.25pt!important;border-top:0!important;border-right:0!important}
+  .employee-row button{display:none!important}
+  .employee-row .hours{background:#f7f8f7!important}
+  .employee-summary{margin:0!important;padding:.7mm 1mm!important;text-align:right!important;font-size:5.25pt!important;font-weight:700!important;background:#f0f3f2!important;border:1px solid #c9d0cc!important;border-top:0!important}
+  .rowhead{font-size:4.55pt!important;line-height:1!important;gap:0!important;margin:0!important;background:#e8ecea!important;border:1px solid #c5ccc8!important;padding:.75mm!important}
+  .mathead,.matrow,.setuphead,.setuprow{grid-template-columns:minmax(0,1fr) 20mm 17mm 0!important;gap:0!important}
+  .matrow,.setuprow{margin:0!important;padding:0!important}
+  .matrow input,.setuprow input,.matrow select,.setuprow select{height:4.3mm!important;font-size:5.25pt!important;border-top:0!important;border-right:0!important}
+  .matrow button,.setuprow button{display:none!important}
+  .travel-card .grid{grid-template-columns:1fr 1fr!important}
+  .signature-grid{grid-template-columns:25mm 1fr 1fr!important;gap:.8mm!important}
+  .signature-block{border:1px solid #c9d0cc!important;border-radius:0!important;padding:.75mm!important;min-height:18mm!important}
+  .signature-block b{font-size:4.55pt!important}
+  .signature-block canvas{height:11.5mm!important;border-bottom:1px solid #cbd4cf!important}
+  .signature-intro{font-size:4.3pt!important;line-height:1.1!important;margin:0 0 .7mm!important}
+  .signature-card:after{content:"Der Auftraggeber erklärt mit Unterschrift die ordnungsgemäße Ausführung der Arbeiten. Mit Auftragserteilung erklärt sich der Auftraggeber mit unseren Geschäftsbedingungen einverstanden. Es gelten die Stundensätze, die auf unserer Internetseite veröffentlicht sind. Die Arbeitszeit beginnt mit Verlassen unseres Betriebes in Baunatal und endet bei Rückkehr. Materialkosten werden je nach Verbrauch in Rechnung gestellt. Da es sich bei Arbeiten an Dächern um eine sehr gefahrenträchtige Arbeit handelt, entstehen Kosten der Baustelleneinrichtung. Die Baustelleneinrichtung beinhaltet Sicherungsmaßnahmen unterschiedlicher Art, die vom Gesetzgeber bei Dacharbeiten vorgeschrieben sind. Auch bei Festpreisangeboten können Zusatzkosten entstehen. Sie erhalten eine Rechnung von uns, die Zahlung ist dann innerhalb 8 Tagen ohne Abzug fällig. Unsere aktuellen Stundensätze und vollständigen Geschäftsbedingungen können Sie jederzeit auf unserer Internetseite einsehen.";display:block;font-size:3.45pt!important;line-height:1.08!important;color:#222!important;margin-top:.8mm!important;border-top:1px solid #d4dad7!important;padding-top:.7mm!important}
+  .photos-card{display:block!important;break-before:page!important;page-break-before:always!important;margin-top:0!important;padding:0!important;border:0!important}
+  .photos-card .photo-preview{display:grid!important;grid-template-columns:1fr 1fr!important;gap:3mm!important;padding:0!important}
+  .photoitem{height:118mm!important;border:1px solid #d0d6d2!important;break-inside:avoid!important;page-break-inside:avoid!important;display:flex!important;align-items:center!important;justify-content:center!important}
+  .photoitem img{width:100%!important;height:100%!important;object-fit:contain!important;border:0!important}
+  .photoitem button,.photoitem small{display:none!important}
+  .print-page > .card:not(.photos-card){break-inside:avoid!important;page-break-inside:avoid!important}
+}
+
+/* PROTOTYP6: separate PDF document, independent from the app UI */
+#pdfTemplate{display:none}
+#pdfTemplate.printing{display:block!important;position:fixed!important;left:0!important;top:0!important;width:100%!important;z-index:99999!important;background:#fff!important}
+#pdfTemplate.printing .pdf-sheet{display:block}
+.pdf-sheet{box-sizing:border-box;width:194mm;min-height:285mm;margin:0 auto;padding:4mm 0 3mm;background:#fff;color:#17211c;font-family:Arial,Helvetica,sans-serif}
+.pdf-head{height:19mm;display:grid;grid-template-columns:48mm 1fr 42mm;align-items:center;gap:3mm;border-bottom:1mm solid #2d7b54}
+.pdf-logo img{width:47mm;max-height:12mm;object-fit:contain}
+.pdf-company{font-size:6.2pt;line-height:1.2;color:#53625b}
+.pdf-title{text-align:right;color:#1f7b50;font-size:10pt;font-weight:800;line-height:1.05}.pdf-title span{font-size:7pt}
+.pdf-info,.pdf-table,.pdf-sign{width:100%;border-collapse:collapse;table-layout:fixed}
+.pdf-info{margin-top:2mm;font-size:6.2pt}
+.pdf-info th{background:#e7ebe9;color:#53625b;text-align:left;font-weight:700;padding:1mm;border:1px solid #c5ccc8}
+.pdf-info td{padding:1.1mm;border:1px solid #c5ccc8;font-weight:600;vertical-align:top}
+.pdf-section{margin-top:1.7mm;border:1px solid #c5ccc8;break-inside:avoid;page-break-inside:avoid}
+.pdf-bar{height:4.7mm;line-height:4.7mm;background:#187a4d;color:#fff;font-size:7.1pt;font-weight:800;padding:0 1.5mm}
+.pdf-work{min-height:11mm;padding:1.4mm;font-size:6.1pt;line-height:1.25}
+.pdf-table{font-size:5.9pt}.pdf-table th{background:#e7ebe9;font-weight:800;text-align:left}.pdf-table th,.pdf-table td{border:1px solid #c5ccc8;padding:.85mm;vertical-align:middle}.pdf-table tfoot td{background:#f0f3f2;font-weight:800;text-align:right}.pdf-empty{text-align:left;color:#69746f}
+.pdf-table th:nth-child(1){width:44%}.pdf-table th:nth-child(2){width:18%}.pdf-table th:nth-child(3){width:18%}.pdf-table th:nth-child(4){width:10%}.pdf-table th:nth-child(5){width:10%}
+.pdf-confirm-text{padding:1.1mm 1.5mm;font-size:5.7pt}
+.pdf-sign{font-size:5.7pt}.pdf-sign th{background:#e7ebe9;text-align:left;border:1px solid #c5ccc8;padding:.8mm}.pdf-sign td{border:1px solid #c5ccc8;padding:1mm;height:16mm;vertical-align:top}.pdf-sign img{max-width:100%;height:13mm;object-fit:contain}
+.pdf-agb{font-size:4.1pt;line-height:1.12;padding:1.1mm 1.5mm;border-top:1px solid #d0d6d3}
+.pdf-footer{font-size:4.1pt;color:#5c6862;margin-top:1mm}.pdf-footer span{float:right}
+@media print{
+  body>*:not(#pdfTemplate){display:none!important}
+  #pdfTemplate.printing{position:static!important;display:block!important}
+  #pdfTemplate.printing .pdf-sheet{width:194mm!important;height:285mm!important;min-height:285mm!important;margin:0 auto!important;padding:4mm 0 3mm!important}
+  @page{size:A4 portrait;margin:6mm 8mm}
+}
+
+/* PROTOTYP7: Mitarbeiter-Zeiterfassung wieder als kompakte Tabellenzeile */
+@media(max-width:720px){
+  .employee-columns{
+    display:grid!important;
+    grid-template-columns:minmax(95px,1.55fr) .72fr .72fr .82fr .88fr 36px!important;
+    gap:3px!important; align-items:center!important;
+    font-size:10px!important; line-height:1.05!important;
+    padding:7px 5px!important; margin:0!important; overflow:hidden!important;
+  }
+  .employee-columns span{min-width:0!important}
+  .employee-mobile-columns{display:none!important}
+  .employee-row{
+    display:grid!important;
+    grid-template-columns:minmax(95px,1.55fr) .72fr .72fr .82fr .88fr 36px!important;
+    gap:3px!important; align-items:center!important;
+    margin:0!important; padding:5px!important; overflow:hidden!important;
+  }
+  .employee-row .ename,.employee-row .beg,.employee-row .end,.employee-row .pause,.employee-row .hours{
+    grid-column:auto!important; grid-row:auto!important;
+    width:100%!important; min-width:0!important; box-sizing:border-box!important;
+    height:42px!important; padding:6px 5px!important; font-size:13px!important;
+  }
+  .employee-row button{grid-column:auto!important;grid-row:auto!important;width:36px!important;height:42px!important;padding:0!important}
+  .employee-summary{text-align:right!important;font-size:12px!important;padding:7px!important}
+}
+@media print{
+  html,body{background:#fff!important}
+  #pdfTemplate{display:block!important;visibility:visible!important}
+  #pdfTemplate.printing{display:block!important;visibility:visible!important;position:static!important}
+  #pdfTemplate.printing *{visibility:visible!important}
+  body > *:not(#pdfTemplate){display:none!important}
+}
+
+/* Vier Baustellenfotos pro A4-PDF-Seite */
+#pdfPhotoPages{display:block}
+.pdf-photo-page{width:194mm;height:285mm;box-sizing:border-box;margin:0 auto;padding:0 0 4mm;break-before:page;page-break-before:always;background:#fff;color:#17211c;font-family:Arial,Helvetica,sans-serif}
+.pdf-photo-head{height:18mm;box-sizing:border-box;display:grid;grid-template-columns:43mm 1fr 25mm;align-items:center;gap:3mm;border-bottom:1mm solid #2d7b54}
+.pdf-photo-head img{width:40mm;max-height:10mm;object-fit:contain}.pdf-photo-head b{font-size:8pt;color:#1f7b50}.pdf-photo-head div{font-size:6pt;line-height:1.2}.pdf-photo-count{text-align:right;font-weight:700}
+.pdf-photo-grid{height:260mm;margin-top:3mm;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:4mm;box-sizing:border-box}
+.pdf-photo-item{min-width:0;min-height:0;border:1px solid #c5ccc8;padding:2mm;display:flex;flex-direction:column;align-items:center;justify-content:center;break-inside:avoid;page-break-inside:avoid;overflow:hidden}
+.pdf-photo-item img{display:block;max-width:100%;max-height:calc(100% - 7mm);width:auto;height:auto;object-fit:contain;min-height:0}
+.pdf-photo-caption{flex:0 0 auto;width:100%;font-size:5.5pt;color:#53625b;margin-top:1.5mm;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media print{#pdfPhotoPages{display:block!important}.pdf-photo-page{break-before:page!important;page-break-before:always!important}.pdf-photo-grid{break-inside:avoid!important;page-break-inside:avoid!important}}
+
+.photoitem .mark-btn{position:absolute;left:6px;bottom:34px;border:1px solid #d40000;border-radius:6px;background:#fff;color:#b00000;padding:6px 8px;cursor:pointer;font-weight:700}.photo-editor{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9999;display:flex;align-items:center;justify-content:center;padding:14px}.photo-editor[hidden]{display:none}.photo-editor-panel{width:min(96vw,980px);max-height:96vh;overflow:auto;background:#fff;border-radius:12px;padding:14px}.photo-editor-head{display:flex;justify-content:space-between;align-items:center;font-size:18px}.photo-editor-head button{border:0;background:#eee;border-radius:50%;width:38px;height:38px;font-size:24px;cursor:pointer}.photo-canvas-wrap{display:flex;justify-content:center;overflow:auto;background:#202522;border-radius:8px;padding:8px;margin:8px 0}.photo-canvas-wrap canvas{max-width:100%;height:auto;touch-action:none;display:block}.photo-editor-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}.photo-editor-actions button{border:1px solid #cbd4cf;background:#fff;border-radius:7px;padding:10px 13px;cursor:pointer;font-weight:700}
+
+/* DACHWERK-Feinschliff: grüner Marken-Hintergrund zwischen den Formular-Karten beim Auftrag erstellen */
+@media screen {
+  #view-auftrag .print-page {
+    background: #2d7b54;
+    padding: 12px;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(24, 61, 42, 0.12);
+  }
+  #view-auftrag .card {
+    border-color: rgba(255,255,255,0.55);
+  }
+}
+
+
+/* DACHWERK-Feinschliff: grüner Marken-Hintergrund auf allen App-Seiten; grüne Aktionen bleiben weiß und gut erkennbar */
+@media screen {
+  .appview {
+    background: #2d7b54;
+    padding: 12px;
+    border-radius: 14px;
+    box-sizing: border-box;
+    box-shadow: 0 8px 24px rgba(24, 61, 42, 0.12);
+  }
+  #view-auftrag .print-page {
+    background: #2d7b54;
+    padding: 12px;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(24, 61, 42, 0.12);
+  }
+  .appview .card { border-color: rgba(255,255,255,0.65); }
+  .appview button.primary,
+  .appview .navbtn.active,
+  .appview .filebutton {
+    background: #fff !important;
+    color: #246b49 !important;
+    border: 1px solid #fff !important;
+  }
+  .appnav .navbtn {
+    background: #fff !important;
+    color: #246b49 !important;
+    border-color: #fff !important;
+  }
+  .appnav .navbtn.active {
+    background: #eaf4ee !important;
+    color: #174c32 !important;
+    border-color: #fff !important;
+    box-shadow: inset 0 -3px 0 #246b49;
+  }
+  .appview .actions button,
+  .appview .toolbar button,
+  .appview .section-title button,
+  .appview .order-actions button,
+  .appview .signature-actions button,
+  .appview .address-actions button {
+    background: #fff;
+    color: #246b49;
+    border-color: #dce7e0;
+  }
+  .signature-terms {
+    margin: 12px 0 0;
+    padding: 12px;
+    border: 1px solid #dce3df;
+    border-radius: 8px;
+    background: #f7faf8;
+    color: #34433d;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}
+/* Fahrtkosten je Baustellentag */
+.travel-columns,.travel-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(130px,.55fr) 42px;gap:8px;align-items:center}
+.travel-columns{font-size:12px;color:#66736d;font-weight:700;margin:10px 0 5px}
+.travel-row{margin:7px 0}
+.travel-row button{height:40px;border:0;border-radius:6px;background:#f1f3f2;cursor:pointer;font-size:20px}
+@media(max-width:600px){.travel-columns,.travel-row{grid-template-columns:minmax(0,1fr) minmax(100px,.7fr) 38px;gap:6px}}
+
+/* Suchfeld in der Auftragsübersicht */
+.order-search{display:flex;flex-direction:column;gap:6px;margin:16px 0 18px;padding:14px;background:#fff;border:1px solid #dce7e0;border-radius:10px}
+.order-search label{font-weight:700;color:#246b49;font-size:14px}
+.order-search input{width:100%;box-sizing:border-box;min-height:44px;padding:10px 12px;border:1px solid #cbd8d0;border-radius:7px;font:inherit;background:#fff;color:#26352d}
+.order-search input:focus{outline:2px solid #2d7b54;outline-offset:1px}
+
+/* DACHWERK Pro UI – hochwertige, dezente Tiefenwirkung (nur App-Ansicht, PDF bleibt unverändert) */
+@media screen {
+  :root { color-scheme: light; }
+  body { background: linear-gradient(145deg,#e4eee8 0%,#f3f7f4 42%,#e8f0eb 100%); color:#1c2b23; }
+  header { background:linear-gradient(135deg,#ffffff 0%,#f5f9f6 100%); border-bottom:1px solid #d1ded6; box-shadow:0 5px 18px rgba(24,61,42,.08); position:relative; z-index:2; }
+  .brand img { filter:drop-shadow(0 3px 3px rgba(23,57,39,.12)); }
+  .headright { color:#51665a; }
+  .appnav { background:linear-gradient(110deg,#1c3d2d,#294f3b 65%,#203b2d); padding-top:12px; padding-bottom:12px; box-shadow:0 7px 20px rgba(20,51,35,.2); }
+  .navbtn { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.24); border-radius:10px; padding:10px 15px; box-shadow:inset 0 1px 0 rgba(255,255,255,.08); transition:transform .16s ease,background .16s ease,box-shadow .16s ease; }
+  .navbtn:hover { transform:translateY(-1px); background:rgba(255,255,255,.18); }
+  .navbtn.active { background:#fff; color:#246342; border-color:#fff; box-shadow:0 4px 12px rgba(0,0,0,.16); }
+  .appview { max-width:1240px; margin:26px auto; }
+  #view-auftrag .print-page { background:linear-gradient(145deg,#2d7b54 0%,#246545 100%); padding:14px; border-radius:18px; box-shadow:0 16px 38px rgba(24,61,42,.17),inset 0 1px 0 rgba(255,255,255,.15); }
+  .card { background:linear-gradient(155deg,#fff 0%,#fbfdfb 100%); border:1px solid rgba(206,221,212,.95); border-radius:14px; padding:19px; margin-bottom:16px; box-shadow:0 5px 16px rgba(25,59,40,.07),0 1px 2px rgba(25,59,40,.04); transition:box-shadow .18s ease,transform .18s ease; }
+  .card:hover { box-shadow:0 8px 23px rgba(25,59,40,.1),0 2px 4px rgba(25,59,40,.04); }
+  .card h2 { color:#234a34; letter-spacing:.01em; }
+  .section-title h2 { font-size:19px; }
+  .subtext,.photohelp,.hint { color:#64786c; }
+  .grid { gap:16px; }
+  input,select,textarea { border-color:#c8d7cd; border-radius:9px; background:#fff; box-shadow:inset 0 1px 2px rgba(24,61,42,.035); transition:border-color .15s ease,box-shadow .15s ease; }
+  input:focus,select:focus,textarea:focus { outline:none; border-color:#4a9870; box-shadow:0 0 0 3px rgba(45,123,84,.14); }
+  button,.filebutton { transition:transform .15s ease,box-shadow .15s ease,background .15s ease; }
+  .toolbar button,.actions button,.section-title button,.order-actions button,.signature-actions button,.address-actions button,.filebutton,.matrow button,.setuprow button,.employee-row button,.masterrow button,.voice-button,.primary { background:#fff!important; color:#246342!important; border:1px solid #b9d2c2!important; border-radius:9px!important; box-shadow:0 2px 0 rgba(36,99,66,.08),0 3px 9px rgba(24,61,42,.06); }
+  .toolbar button:hover,.actions button:hover,.section-title button:hover,.order-actions button:hover,.signature-actions button:hover,.address-actions button:hover,.filebutton:hover,.matrow button:hover,.setuprow button:hover,.employee-row button:hover,.masterrow button:hover,.voice-button:hover,.primary:hover { transform:translateY(-1px); background:#f2f8f4!important; box-shadow:0 4px 0 rgba(36,99,66,.07),0 7px 14px rgba(24,61,42,.1); }
+  .navbtn { color:#fff!important; }
+  .navbtn.active { color:#246342!important; }
+  .danger { color:#a33131!important; }
+  .order-card { background:linear-gradient(145deg,#fff,#f8fbf9); border:1px solid #d2e0d7; border-radius:13px; padding:16px; box-shadow:0 4px 12px rgba(25,59,40,.055); }
+  .order-card:hover { border-color:#9ec4ac; box-shadow:0 8px 20px rgba(25,59,40,.1); }
+  .order-card h3 { color:#213e2d; }
+  .eyebrow { color:#2d7b54; }
+  .storage { background:linear-gradient(135deg,#f7fbf8,#edf5f0); border-color:#d4e3d9; }
+  .bar { background:#dce9e0; }
+  .bar i { background:linear-gradient(90deg,#2d7b54,#65a77f); }
+  .signature-block,.photoitem { border-color:#d4e1d9; border-radius:10px; }
+  .signature-terms { background:#f5f9f6; border-left:3px solid #2d7b54; padding:10px 12px; border-radius:0 8px 8px 0; }
+  .travel-card { border-left:4px solid #4e8b68; }
+  .appointment { border-left:4px solid #4e8b68; }
+  .employee-summary { background:linear-gradient(120deg,#eff7f1,#e5f0e8); border-color:#cfe0d4; color:#234a34; border-radius:10px; }
+  .empty-state { background:rgba(255,255,255,.55); border-radius:10px; }
+}
+@media screen and (max-width:720px) {
+  .appview { margin:15px auto; }
+  #view-auftrag .print-page { padding:8px; border-radius:13px; }
+  .card { padding:14px; border-radius:12px; margin-bottom:11px; }
+  .appnav { gap:6px; }
+  .navbtn { padding:9px 12px; }
+}
+
+
+/* PDF-Tabellen: mehr Platz für Verbrauchsangaben und mehrere Materialmengen */
+#pdfTemplate .pdf-material-table,
+#pdfTemplate .pdf-setup-table{table-layout:fixed;width:100%;font-size:6.8pt}
+#pdfTemplate .pdf-material-table th:nth-child(1),
+#pdfTemplate .pdf-setup-table th:nth-child(1){width:28%;white-space:nowrap}
+#pdfTemplate .pdf-material-table th:nth-child(2),
+#pdfTemplate .pdf-setup-table th:nth-child(2){width:52%}
+#pdfTemplate .pdf-material-table th:nth-child(3),
+#pdfTemplate .pdf-setup-table th:nth-child(3){width:20%}
+#pdfTemplate .pdf-material-table th,
+#pdfTemplate .pdf-material-table td,
+#pdfTemplate .pdf-setup-table th,
+#pdfTemplate .pdf-setup-table td{padding:1mm 1.2mm;line-height:1.15;overflow-wrap:anywhere}
+#pdfTemplate .pdf-sheet.pdf-dense .pdf-material-table,
+#pdfTemplate .pdf-sheet.pdf-dense .pdf-setup-table{font-size:6.1pt}
+#pdfTemplate .pdf-sheet.pdf-dense .pdf-material-table th,
+#pdfTemplate .pdf-sheet.pdf-dense .pdf-material-table td,
+#pdfTemplate .pdf-sheet.pdf-dense .pdf-setup-table th,
+#pdfTemplate .pdf-sheet.pdf-dense .pdf-setup-table td{padding:.65mm 1mm;line-height:1.08}
+#pdfTemplate .pdf-sheet.pdf-dense .pdf-work{font-size:5.7pt;line-height:1.15;min-height:7mm;padding:1mm}
+#pdfTemplate .pdf-sheet.pdf-dense .pdf-section{margin-top:1.1mm}
+#pdfTemplate .pdf-sheet.pdf-dense .pdf-bar{height:4.2mm;line-height:4.2mm;font-size:6.6pt}
+#pdfTemplate .pdf-sheet.pdf-very-dense .pdf-material-table,
+#pdfTemplate .pdf-sheet.pdf-very-dense .pdf-setup-table{font-size:5.5pt}
+#pdfTemplate .pdf-sheet.pdf-very-dense .pdf-material-table th,
+#pdfTemplate .pdf-sheet.pdf-very-dense .pdf-material-table td,
+#pdfTemplate .pdf-sheet.pdf-very-dense .pdf-setup-table th,
+#pdfTemplate .pdf-sheet.pdf-very-dense .pdf-setup-table td{padding:.45mm .8mm;line-height:1.02}
+#pdfTemplate .pdf-sheet.pdf-very-dense .pdf-work{font-size:5.1pt;line-height:1.08;min-height:5mm;padding:.7mm}
+#pdfTemplate .pdf-sheet.pdf-very-dense .pdf-section{margin-top:.7mm}
+#pdfTemplate .pdf-sheet.pdf-very-dense .pdf-bar{height:3.8mm;line-height:3.8mm;font-size:6.1pt}
+
+
+/* Verbrauchs-Eingabe: große, gut lesbare Bearbeitungsfläche mit Spracheingabe */
+#pdfTemplate .pdf-material-table th:nth-child(1),#pdfTemplate .pdf-material-table td:nth-child(1){width:18%;white-space:normal}
+#pdfTemplate .pdf-material-table th:nth-child(2),#pdfTemplate .pdf-material-table td:nth-child(2){width:64%}
+#pdfTemplate .pdf-material-table th:nth-child(3),#pdfTemplate .pdf-material-table td:nth-child(3){width:18%}
+#pdfTemplate .pdf-setup-table th:nth-child(1),#pdfTemplate .pdf-setup-table td:nth-child(1){width:25%;white-space:normal}
+#pdfTemplate .pdf-setup-table th:nth-child(2),#pdfTemplate .pdf-setup-table td:nth-child(2){width:57%}
+#pdfTemplate .pdf-setup-table th:nth-child(3),#pdfTemplate .pdf-setup-table td:nth-child(3){width:18%}
+#pdfTemplate .pdf-material-table td,#pdfTemplate .pdf-setup-table td{white-space:normal;overflow-wrap:anywhere;word-break:normal;vertical-align:top}
+.qty{cursor:pointer;background-image:linear-gradient(transparent,transparent);padding-right:28px!important}
+.qty:read-only{background-color:#f7fbf8;cursor:pointer}
+.consumption-modal[hidden]{display:none!important}
+.consumption-modal{position:fixed;inset:0;z-index:9999;background:rgba(15,35,25,.62);display:flex;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(5px)}
+.consumption-dialog{width:min(680px,100%);background:#fff;border:1px solid #dce7df;border-radius:18px;padding:20px;box-shadow:0 24px 80px rgba(0,0,0,.28)}
+.consumption-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}
+.consumption-dialog-head h2{margin:0 0 5px;color:#205d3d;font-size:1.25rem}
+.consumption-dialog-head p{margin:0;color:#617067;font-size:.92rem}
+#consumptionText{display:block;width:100%;min-height:150px;resize:vertical;font:1.08rem/1.5 system-ui,sans-serif;padding:14px;border:1px solid #b9cfc0;border-radius:12px;box-sizing:border-box}
+.consumption-actions{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.consumption-actions span{flex:1}
+.consumption-close{font-size:1.6rem;line-height:1;border-radius:50%;min-width:40px;padding:5px}
+@media(max-width:600px){.consumption-dialog{padding:15px;border-radius:15px}.consumption-actions{gap:6px}.consumption-actions span{display:none}.consumption-actions button{flex:1}}
+
+/* PDF-Fix: Verbrauchswerte aus dem großen Textfeld sicher anzeigen und Tabellen sauber ausrichten */
+#pdfTemplate .pdf-material-table,
+#pdfTemplate .pdf-setup-table {
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+}
+#pdfTemplate .pdf-material-table th:nth-child(1),
+#pdfTemplate .pdf-material-table td:nth-child(1),
+#pdfTemplate .pdf-setup-table th:nth-child(1),
+#pdfTemplate .pdf-setup-table td:nth-child(1) { width: 18% !important; }
+#pdfTemplate .pdf-material-table th:nth-child(2),
+#pdfTemplate .pdf-material-table td:nth-child(2),
+#pdfTemplate .pdf-setup-table th:nth-child(2),
+#pdfTemplate .pdf-setup-table td:nth-child(2) { width: 64% !important; }
+#pdfTemplate .pdf-material-table th:nth-child(3),
+#pdfTemplate .pdf-material-table td:nth-child(3),
+#pdfTemplate .pdf-setup-table th:nth-child(3),
+#pdfTemplate .pdf-setup-table td:nth-child(3) { width: 18% !important; }
+#pdfTemplate .pdf-material-table td:nth-child(2),
+#pdfTemplate .pdf-setup-table td:nth-child(2) {
+  white-space: pre-wrap !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  vertical-align: top !important;
+}
+#pdfTemplate .pdf-material-table td,
+#pdfTemplate .pdf-setup-table td,
+#pdfTemplate .pdf-material-table th,
+#pdfTemplate .pdf-setup-table th {
+  box-sizing: border-box;
+  overflow: visible;
+  vertical-align: top;
+}
+
+/* PDF-Korrektur: Verbrauchstexte vollständig und ordentlich innerhalb der Tabellenzelle anzeigen */
+#pdfTemplate .pdf-material-table,
+#pdfTemplate .pdf-setup-table{width:100%;table-layout:fixed;border-collapse:collapse;}
+#pdfTemplate .pdf-material-table th:nth-child(1),
+#pdfTemplate .pdf-setup-table th:nth-child(1){width:22%;}
+#pdfTemplate .pdf-material-table th:nth-child(2),
+#pdfTemplate .pdf-setup-table th:nth-child(2){width:68%;}
+#pdfTemplate .pdf-material-table th:nth-child(3),
+#pdfTemplate .pdf-setup-table th:nth-child(3){width:10%;}
+#pdfTemplate .pdf-material-table td,
+#pdfTemplate .pdf-setup-table td{white-space:normal;overflow-wrap:anywhere;word-break:normal;vertical-align:top;line-height:1.25;padding:1.1mm 1.3mm;}
+#pdfTemplate .pdf-material-table td:nth-child(2),
+#pdfTemplate .pdf-setup-table td:nth-child(2){white-space:pre-wrap;overflow-wrap:anywhere;}
+
+/* Desktop-Fix: Entfernen-Schaltflächen für Material und Baustelleneinrichtung immer sichtbar */
+@media screen and (min-width:721px){
+  .mathead,.setuphead,.matrow,.setuprow{
+    grid-template-columns:minmax(180px,1fr) minmax(220px,1.35fr) minmax(90px,120px) 42px;
+  }
+  .matrow button,.setuprow button{
+    display:inline-flex!important;
+    align-items:center;
+    justify-content:center;
+    width:42px;
+    min-width:42px;
+    height:40px;
+    font-size:24px;
+    line-height:1;
+    color:#a12b2b;
+    background:#fff5f5;
+    border:1px solid #e6caca;
+    border-radius:7px;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+}
+@media screen and (max-width:720px){
+  .matrow button,.setuprow button{display:inline-flex!important;align-items:center;justify-content:center;visibility:visible!important;opacity:1!important;}
+}
+
+/* DACHWERK professional login */
+body{background:#f3f5f4}.login-screen{position:fixed;inset:0;z-index:9999;background:#07100e;color:#f6f8f7;overflow:auto;font-family:Arial,Helvetica,sans-serif}.login-top{height:52px;border-bottom:1px solid #146c42;display:flex;align-items:center;justify-content:space-between;padding:0 4%;font-size:11px;letter-spacing:2px;color:#aeb9b4}.login-brand{font-size:18px;letter-spacing:0;color:#fff}.login-brand:first-letter{color:#00c66b}.login-layout{display:grid;grid-template-columns:minmax(360px,42%) 1fr;min-height:calc(100vh - 52px)}.login-panel{padding:clamp(26px,5vw,74px);max-width:700px;align-self:center}.login-mark{font-size:54px;line-height:.9;color:#00c66b}.login-wordmark{font-size:clamp(27px,3vw,44px);font-weight:900;letter-spacing:-1.5px;margin:5px 0 34px}.login-wordmark span{color:#00c66b}.login-panel h1{font-size:clamp(30px,3.2vw,50px);line-height:1.08;margin:0 0 12px}.login-panel h1 em{font-style:normal;color:#00c66b}.login-sub{color:#aab5b0;margin:0 0 25px}.login-panel form label{display:block;font-size:13px;font-weight:700;margin:14px 0;color:#e8efeb}.login-panel input{margin-top:8px;background:#111c19;border:1px solid #33413b;color:white;padding:14px;border-radius:10px}.login-panel input:focus{outline:2px solid #00a957;border-color:transparent}.login-submit,.login-register{width:100%;padding:14px;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer}.login-submit{margin-top:8px;border:0;color:white;background:linear-gradient(100deg,#009f4b,#00b85a)}.login-submit span{font-size:24px;margin-left:10px}.login-register{background:transparent;border:1px solid #00b85a;color:#00d878}.login-or{display:flex;align-items:center;gap:14px;color:#84918a;margin:17px 0}.login-or:before,.login-or:after{content:"";height:1px;background:#2c3933;flex:1}.login-or span{font-size:13px}.login-secure{text-align:center;color:#7d8a83;font-size:12px;margin-top:22px}.auth-message{font-size:13px;line-height:1.5;color:#ffc96a;min-height:18px}.login-hero{position:relative;min-height:calc(100vh - 52px);overflow:hidden}.login-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#07100e 0%,transparent 35%),linear-gradient(0deg,rgba(0,0,0,.65),transparent 40%);pointer-events:none}.login-hero img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;object-position:center}.hero-caption{position:absolute;z-index:1;bottom:8%;left:8%;display:flex;flex-direction:column;gap:8px;text-shadow:0 2px 8px #000}.hero-caption b{color:#00d878;letter-spacing:3px;font-size:13px}.hero-caption span{font-size:clamp(18px,2vw,28px);font-weight:700}.nav-user{margin-left:auto;color:#d5e5dc;font-size:12px;white-space:nowrap;align-self:center;padding:0 8px}.pending-user{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-bottom:1px solid #e0e6e2}.pending-user button{border:0;background:#18864d;color:#fff;border-radius:7px;padding:9px 12px;font-weight:bold;cursor:pointer}.pending-users:empty{display:none}@media(max-width:800px){.login-layout{grid-template-columns:1fr}.login-panel{max-width:none;padding:28px 7vw}.login-hero{min-height:32vh;grid-row:1}.login-hero img{object-position:center 35%}.login-hero:after{background:linear-gradient(0deg,#07100e,transparent 75%)}.login-top{padding:0 5%}.login-top>span{font-size:9px;letter-spacing:1px}.login-mark{display:none}.login-wordmark{margin:6px 0 20px}.login-panel h1{font-size:32px}}
+body:not(.authenticated)>header,body:not(.authenticated)>.appnav,body:not(.authenticated)>main{display:none!important}
+
+/* Login Branding: offizielles DACHWERK-Logo + WE FIX IT */
+.login-brand{display:flex;align-items:center;min-width:180px}.login-brand img{display:block;width:190px;max-width:42vw;height:auto;max-height:44px;object-fit:contain;object-position:left center}.login-wordmark{font-size:clamp(34px,4vw,54px);letter-spacing:-1.8px;margin:4px 0 24px;color:#f7faf8}.login-wordmark span{color:#00c66b}.login-panel h1 em{color:#00c66b}.login-top>span{font-weight:700;color:#d1ddd6}.login-panel{max-width:760px}.auth-message{overflow-wrap:anywhere}
+@media(max-width:800px){.login-brand img{width:150px;max-height:36px}.login-wordmark{font-size:38px;margin:4px 0 18px}}
+
+/* DACHWERK Login 2026 – Logo links oben, zentrierte Login-Karte */
+#loginScreen.login-screen{position:fixed;inset:0;z-index:9999;overflow:auto;background:#07100e url('dachwerk-held.png') center center/cover no-repeat;color:#f6f8f7;font-family:Arial,Helvetica,sans-serif}
+#loginScreen.login-screen:before{content:"";position:fixed;inset:0;background:linear-gradient(90deg,rgba(2,9,7,.91) 0%,rgba(2,9,7,.62) 48%,rgba(2,9,7,.18) 100%),linear-gradient(0deg,rgba(1,7,5,.56),rgba(1,7,5,.12));pointer-events:none}
+#loginScreen .login-top{position:relative;z-index:2;height:auto;min-height:110px;border:0;display:flex;align-items:flex-start;justify-content:space-between;padding:26px 4%;font-size:11px;letter-spacing:2px;color:#d1ddd6}
+#loginScreen .login-brand{display:flex;align-items:flex-start;min-width:0}
+#loginScreen .login-brand img{display:block;width:clamp(210px,31vw,390px);max-width:70vw;height:auto;max-height:none;object-fit:contain;object-position:left top}
+#loginScreen .login-top>span{padding-top:10px;text-align:right;font-weight:700;color:#e0e9e4}
+#loginScreen .login-layout{position:relative;z-index:1;display:flex;justify-content:center;align-items:center;min-height:calc(100vh - 130px);padding:0 22px 42px}
+#loginScreen .login-panel{width:min(100%,710px);max-width:710px;align-self:center;padding:clamp(26px,4vw,48px);border:1px solid rgba(0,218,119,.62);border-radius:26px;background:rgba(3,17,13,.82);box-shadow:0 24px 80px rgba(0,0,0,.38);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+#loginScreen .login-wordmark{font-size:clamp(30px,4vw,48px);font-weight:900;letter-spacing:-1.5px;margin:0 0 20px;color:#f7faf8}
+#loginScreen .login-panel h1{font-size:clamp(29px,3.5vw,43px);line-height:1.12;margin:0 0 12px}
+#loginScreen .login-sub{font-size:16px;line-height:1.5;color:#b6c7bf;margin:0 0 24px}
+#loginScreen .login-panel form label{display:block;font-size:13px;font-weight:700;margin:16px 0;color:#e8efeb}
+#loginScreen .login-panel input{width:100%;margin-top:8px;background:rgba(11,29,23,.88);border:1px solid #657a70;color:#fff;padding:16px 17px;border-radius:13px;font-size:16px}
+#loginScreen .login-panel input:focus{outline:2px solid #00d878;border-color:transparent}
+#loginScreen .login-submit,#loginScreen .login-register{width:100%;min-height:54px;padding:15px;border-radius:13px;font-size:16px;font-weight:800;cursor:pointer}
+#loginScreen .login-submit{margin-top:10px;border:0;color:#032218;background:linear-gradient(100deg,#00ce79,#12e4a0);box-shadow:0 8px 24px rgba(0,205,119,.18)}
+#loginScreen .login-submit span{font-size:23px;margin-left:10px}
+#loginScreen .login-register{background:transparent;border:1px solid #00c66b;color:#00e28a}
+#loginScreen .login-or{display:flex;align-items:center;gap:14px;color:#9aa9a1;margin:17px 0}
+#loginScreen .login-or:before,#loginScreen .login-or:after{content:"";height:1px;background:#40564b;flex:1}
+#loginScreen .login-secure{text-align:center;color:#a7b8af;font-size:12px;line-height:1.5;margin-top:22px}
+#loginScreen .auth-message{font-size:13px;line-height:1.5;color:#ffd27b;min-height:18px;margin-bottom:0}
+#loginScreen .login-hero{display:none}
+@media(max-width:650px){#loginScreen .login-top{min-height:100px;padding:20px 20px 10px;align-items:flex-start}#loginScreen .login-brand img{width:min(74vw,300px)}#loginScreen .login-top>span{max-width:120px;font-size:8px;line-height:1.5;letter-spacing:1px}#loginScreen .login-layout{min-height:calc(100vh - 100px);padding:8px 15px 28px;align-items:center}#loginScreen .login-panel{padding:25px 22px;border-radius:22px}#loginScreen .login-wordmark{font-size:34px;margin-bottom:17px}#loginScreen .login-panel h1{font-size:30px}#loginScreen .login-sub{font-size:14px;margin-bottom:20px}#loginScreen .login-panel input{padding:15px;font-size:16px}}
+#loginScreen .login-welcome{font-size:12px;letter-spacing:4px;color:#c5d5cd;margin:0 0 12px}
+#loginScreen .login-wordmark{margin-bottom:3px}
+#loginScreen .login-wordmark span{color:#00d878}
+#loginScreen .login-companyline{font-size:clamp(12px,1.7vw,17px);letter-spacing:2px;color:#e1e9e5;margin:0 0 27px}
+#loginScreen .login-panel h1{font-size:clamp(24px,2.8vw,34px);margin-bottom:9px}
+@media(max-width:650px){#loginScreen .login-welcome{font-size:10px;letter-spacing:3px}#loginScreen .login-companyline{font-size:12px;letter-spacing:1.4px;margin-bottom:23px}#loginScreen .login-panel h1{font-size:25px}}
+
+/* DACHWERK PDF Lesbarkeit / A4-Korrektur */
+@media print {
+  @page { size: A4 portrait; margin: 8mm; }
+  #pdfTemplate.printing { width: 100% !important; }
+  #pdfTemplate.printing .pdf-sheet {
+    box-sizing: border-box !important;
+    width: 194mm !important;
+    min-height: 281mm !important;
+    height: auto !important;
+    margin: 0 auto !important;
+    padding: 2mm 0 3mm !important;
+    overflow: visible !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+  }
+  #pdfTemplate .pdf-head { height: 20mm !important; }
+  #pdfTemplate .pdf-company { font-size: 7.4pt !important; line-height: 1.25 !important; }
+  #pdfTemplate .pdf-title { font-size: 12pt !important; }
+  #pdfTemplate .pdf-title span { font-size: 8.5pt !important; }
+  #pdfTemplate .pdf-info { font-size: 8pt !important; }
+  #pdfTemplate .pdf-info th, #pdfTemplate .pdf-info td { padding: 1.4mm !important; }
+  #pdfTemplate .pdf-section { margin-top: 2mm !important; }
+  #pdfTemplate .pdf-bar { height: 5.5mm !important; line-height: 5.5mm !important; font-size: 8.5pt !important; }
+  #pdfTemplate .pdf-work { min-height: 13mm !important; padding: 2mm !important; font-size: 8.5pt !important; line-height: 1.3 !important; overflow-wrap: anywhere !important; }
+  #pdfTemplate .pdf-table { font-size: 7.8pt !important; }
+  #pdfTemplate .pdf-table th, #pdfTemplate .pdf-table td { padding: 1.1mm !important; line-height: 1.18 !important; overflow-wrap: anywhere !important; }
+  #pdfTemplate .pdf-confirm-text { padding: 1.8mm 2mm !important; font-size: 8pt !important; line-height: 1.25 !important; }
+  #pdfTemplate .pdf-sign { font-size: 7.5pt !important; }
+  #pdfTemplate .pdf-sign th { padding: 1.2mm !important; }
+  #pdfTemplate .pdf-sign td { height: 17mm !important; padding: 1.2mm !important; }
+  #pdfTemplate .pdf-sign img { height: 14mm !important; }
+  #pdfTemplate .pdf-agb { font-size: 6.2pt !important; line-height: 1.25 !important; padding: 1.5mm 2mm !important; }
+  #pdfTemplate .pdf-footer { font-size: 6.2pt !important; margin-top: 1.5mm !important; }
+  #pdfTemplate .pdf-sheet.pdf-dense .pdf-work,
+  #pdfTemplate .pdf-sheet.pdf-very-dense .pdf-work { font-size: 7.8pt !important; line-height: 1.2 !important; min-height: 8mm !important; padding: 1.4mm !important; }
+  #pdfTemplate .pdf-sheet.pdf-dense .pdf-material-table,
+  #pdfTemplate .pdf-sheet.pdf-dense .pdf-setup-table,
+  #pdfTemplate .pdf-sheet.pdf-very-dense .pdf-material-table,
+  #pdfTemplate .pdf-sheet.pdf-very-dense .pdf-setup-table { font-size: 7.2pt !important; }
+  #pdfTemplate .pdf-sheet.pdf-dense .pdf-material-table th,
+  #pdfTemplate .pdf-sheet.pdf-dense .pdf-material-table td,
+  #pdfTemplate .pdf-sheet.pdf-dense .pdf-setup-table th,
+  #pdfTemplate .pdf-sheet.pdf-dense .pdf-setup-table td,
+  #pdfTemplate .pdf-sheet.pdf-very-dense .pdf-material-table th,
+  #pdfTemplate .pdf-sheet.pdf-very-dense .pdf-material-table td,
+  #pdfTemplate .pdf-sheet.pdf-very-dense .pdf-setup-table th,
+  #pdfTemplate .pdf-sheet.pdf-very-dense .pdf-setup-table td { padding: .9mm 1mm !important; line-height: 1.12 !important; }
+  #pdfTemplate .pdf-photo-page { width: 194mm !important; height: 281mm !important; margin: 0 auto !important; break-before: page !important; page-break-before: always !important; }
+  #pdfTemplate .pdf-photo-grid { height: 255mm !important; }
+  #pdfTemplate .pdf-photo-head b { font-size: 10pt !important; }
+  #pdfTemplate .pdf-photo-head div { font-size: 8pt !important; }
+  #pdfTemplate .pdf-photo-caption { font-size: 7.5pt !important; }
+}
+
+/* FINAL PDF FIX: zuverlässiger Druckbaum für Desktop-Browser und iOS Safari */
+@media print {
+  @page { size: A4 portrait; margin: 0; }
+  html, body {
+    display: block !important;
+    width: 210mm !important;
+    min-width: 210mm !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  body > *:not(#pdfTemplate) { display: none !important; }
+  #pdfTemplate, #pdfTemplate.printing {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    inset: auto !important;
+    z-index: auto !important;
+    width: 210mm !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+    color: #17211c !important;
+  }
+  #pdfTemplate.printing * { visibility: visible !important; }
+  #pdfTemplate .pdf-sheet {
+    display: block !important;
+    position: static !important;
+    box-sizing: border-box !important;
+    width: 210mm !important;
+    min-width: 210mm !important;
+    height: auto !important;
+    min-height: 297mm !important;
+    margin: 0 !important;
+    padding: 8mm !important;
+    overflow: visible !important;
+    background: #fff !important;
+    color: #17211c !important;
+    break-after: auto !important;
+    page-break-after: auto !important;
+  }
+  #pdfTemplate .pdf-head { height: 20mm !important; }
+  #pdfTemplate .pdf-company { font-size: 8pt !important; line-height: 1.2 !important; }
+  #pdfTemplate .pdf-title { font-size: 13pt !important; }
+  #pdfTemplate .pdf-title span { font-size: 9pt !important; }
+  #pdfTemplate .pdf-info { font-size: 8.5pt !important; }
+  #pdfTemplate .pdf-info th, #pdfTemplate .pdf-info td { padding: 1.5mm !important; }
+  #pdfTemplate .pdf-bar { font-size: 9pt !important; }
+  #pdfTemplate .pdf-work { font-size: 9pt !important; line-height: 1.3 !important; }
+  #pdfTemplate .pdf-table { font-size: 8pt !important; }
+  #pdfTemplate .pdf-table th, #pdfTemplate .pdf-table td { padding: 1.1mm !important; line-height: 1.2 !important; }
+  #pdfTemplate .pdf-confirm-text { font-size: 8.5pt !important; line-height: 1.3 !important; }
+  #pdfTemplate .pdf-sign { font-size: 8pt !important; }
+  #pdfTemplate .pdf-agb { font-size: 7pt !important; line-height: 1.25 !important; }
+  #pdfTemplate .pdf-footer { font-size: 7pt !important; }
+  #pdfTemplate #pdfPhotoPages { display: block !important; }
+  #pdfTemplate .pdf-photo-page {
+    display: block !important;
+    box-sizing: border-box !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    margin: 0 !important;
+    padding: 8mm !important;
+    break-before: page !important;
+    page-break-before: always !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    overflow: hidden !important;
+  }
+  #pdfTemplate .pdf-photo-grid { height: 255mm !important; }
+  #pdfTemplate .pdf-photo-item { break-inside: avoid !important; page-break-inside: avoid !important; }
+  #pdfTemplate .pdf-photo-item img { max-width: 100% !important; max-height: 100% !important; object-fit: contain !important; }
+}
+
+/* DACHWERK Premium Login – responsive desktop + mobile */
+#loginScreen.login-screen{position:fixed;inset:0;z-index:9999;overflow:auto;background:#f6f5f0;color:#10271e;font-family:Arial,Helvetica,sans-serif}
+#loginScreen.login-screen:before{display:none}
+#loginScreen .login-top{position:absolute;z-index:5;top:0;left:0;width:48%;min-height:105px;box-sizing:border-box;padding:25px clamp(24px,4vw,64px);display:flex;align-items:center;justify-content:flex-start;border:0;background:rgba(255,255,255,.82)}
+#loginScreen .login-brand img{width:clamp(200px,24vw,320px);max-width:100%;max-height:none;object-fit:contain}
+#loginScreen .login-top>span{display:none}
+#loginScreen .login-layout{display:grid;grid-template-columns:minmax(430px,48%) minmax(0,52%);min-height:100vh;padding:0;align-items:stretch}
+#loginScreen .login-panel{position:relative;z-index:2;box-sizing:border-box;width:100%;max-width:none;min-height:100vh;align-self:stretch;padding:150px clamp(28px,5vw,76px) 30px;background:linear-gradient(180deg,#fff 0%,#f6f5f0 100%);border:0;border-radius:0;box-shadow:8px 0 35px rgba(11,35,24,.12);backdrop-filter:none;-webkit-backdrop-filter:none;display:flex;flex-direction:column;justify-content:center}
+#loginScreen .login-lock{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:#08774b;color:white;font-size:31px;font-weight:bold;margin:0 auto 18px;box-shadow:0 6px 18px #0c7a4b2b}
+#loginScreen .login-panel h1{font-size:clamp(28px,3vw,40px);font-weight:800;line-height:1.1;text-align:center;color:#10271e;margin:0 0 12px;letter-spacing:-.7px}
+#loginScreen .login-sub{font-size:clamp(14px,1.4vw,17px);line-height:1.5;color:#5f6964;text-align:center;margin:0 auto 28px;max-width:440px}
+#loginScreen .login-panel form label{display:flex;align-items:center;gap:12px;position:relative;box-sizing:border-box;width:100%;height:62px;padding:0 15px;margin:0 0 14px;border:1px solid #cdd4d0;border-radius:13px;background:rgba(255,255,255,.94);color:#101d17}
+#loginScreen .field-icon{flex:0 0 22px;font-size:23px;color:#101d17;text-align:center}
+#loginScreen .login-panel input{box-sizing:border-box;width:100%;min-width:0;height:100%;margin:0;padding:0;border:0;outline:0!important;background:transparent;color:#10271e;font-size:16px;border-radius:0;box-shadow:none}
+#loginScreen .login-panel input::placeholder{color:#8b9290;opacity:1}
+#loginScreen .login-panel form label:focus-within{border-color:#08774b;box-shadow:0 0 0 3px #08774b1c}
+#loginScreen .password-toggle{flex:0 0 35px;width:35px;height:40px;border:0;background:transparent;color:#10271e;padding:6px;cursor:pointer;border-radius:8px;display:grid;place-items:center}
+#loginScreen .password-toggle svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#loginScreen .password-toggle:focus-visible{outline:2px solid #08774b}
+#loginScreen .login-submit{box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:62px;margin-top:4px;padding:15px;border:0;border-radius:13px;background:linear-gradient(110deg,#075d3b,#08764a);color:#fff;font-size:17px;font-weight:800;box-shadow:0 7px 18px #075d3b24;transition:transform .15s,filter .15s}
+#loginScreen .login-submit:hover{filter:brightness(1.08)}#loginScreen .login-submit:active{transform:scale(.99)}#loginScreen .login-submit:disabled{opacity:.65;cursor:wait}
+#loginScreen .submit-icon{font-size:23px;line-height:1}
+#loginScreen .login-or{display:flex;align-items:center;gap:15px;color:#737d77;margin:19px 0}
+#loginScreen .login-or:before,#loginScreen .login-or:after{content:"";height:1px;background:#d8dedb;flex:1}
+#loginScreen .login-or span{font-size:14px}
+#loginScreen .login-register{box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:60px;padding:14px;border:1px solid #6d8e7d;border-radius:13px;background:rgba(255,255,255,.72);color:#087047;font-size:16px;font-weight:800}
+#loginScreen .login-register:hover{background:#eaf4ee}
+#loginScreen .login-secure{font-size:12px;line-height:1.5;text-align:center;color:#737c77;margin:16px 0 2px}
+#loginScreen .auth-message{min-height:0;margin:8px 0 0;color:#9a4a10;font-size:13px;line-height:1.45;text-align:center;overflow-wrap:anywhere}
+#loginScreen .login-hero{position:relative;display:block;min-height:100vh;overflow:hidden;background:#d5d7ce}
+#loginScreen .login-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(5,24,15,.78) 0%,transparent 36%),linear-gradient(90deg,rgba(8,28,18,.08),transparent 45%);pointer-events:none}
+#loginScreen .login-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:53% center}
+#loginScreen .hero-caption{position:absolute;z-index:2;left:7%;right:7%;bottom:7%;display:flex;flex-direction:column;gap:10px;color:white;text-shadow:0 2px 10px #0008}
+#loginScreen .hero-caption b{font-size:13px;letter-spacing:3px;color:#76e2a6}
+#loginScreen .hero-caption span{font-size:clamp(19px,2vw,30px);font-weight:800;line-height:1.2}
+#loginScreen .login-features{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:28px -10px 0;padding-top:20px;border-top:1px solid #dce2de}
+#loginScreen .login-features>div{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;color:#59655e;font-size:10px;line-height:1.3}
+#loginScreen .login-features b{font-size:22px;color:#08774b;font-weight:500}
+#loginScreen .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+#loginScreen .login-burst{position:fixed;z-index:20;left:50%;top:50%;width:min(88vw,440px);box-sizing:border-box;transform:translate(-50%,-50%) scale(.3);opacity:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:30px 22px;border:1px solid #d5e5da;border-radius:24px;background:rgba(255,255,255,.97);box-shadow:0 20px 80px #001b0e42;color:#123c2a;text-align:center}
+#loginScreen .login-burst strong{font-size:clamp(21px,4vw,28px);line-height:1.15;color:#086d45}
+#loginScreen .login-burst>span{font-size:16px;color:#48544d}
+#loginScreen .burst-check{position:relative;z-index:2;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#08774b;color:#fff;font-size:35px;font-weight:bold}
+#loginScreen .burst-rays{position:absolute;z-index:-1;inset:-30px;border-radius:50%;background:repeating-conic-gradient(from 4deg,rgba(17,173,94,.0) 0deg 8deg,rgba(17,173,94,.2) 8deg 11deg);animation:dwBurstSpin 1.2s linear infinite}
+#loginScreen .login-burst.show{animation:dwBurstIn .95s cubic-bezier(.18,.85,.25,1) both}
+@keyframes dwBurstIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.25)}38%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}62%{transform:translate(-50%,-50%) scale(.96)}78%{transform:translate(-50%,-50%) scale(1.02)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes dwBurstSpin{to{transform:rotate(360deg)}}
+@media(max-width:800px){#loginScreen .login-top{position:relative;width:100%;height:auto;min-height:88px;padding:17px 22px;background:#fff;box-sizing:border-box}#loginScreen .login-brand img{width:min(68vw,270px)}#loginScreen .login-layout{display:flex;flex-direction:column;min-height:calc(100vh - 88px)}#loginScreen .login-hero{order:0;min-height:32vh;height:32vh;max-height:310px;width:100%}#loginScreen .login-hero img{object-position:center 42%}#loginScreen .hero-caption{left:6%;bottom:6%}#loginScreen .hero-caption b{font-size:10px;letter-spacing:2px}#loginScreen .hero-caption span{font-size:18px}#loginScreen .login-panel{order:1;min-height:auto;padding:28px clamp(20px,6vw,42px) 24px;box-shadow:none}#loginScreen .login-lock{width:44px;height:44px;font-size:26px;margin-bottom:13px}#loginScreen .login-panel h1{font-size:28px}#loginScreen .login-sub{font-size:14px;margin-bottom:20px}#loginScreen .login-panel form label{height:58px;margin-bottom:12px}#loginScreen .login-submit{min-height:58px}#loginScreen .login-register{min-height:56px}#loginScreen .login-features{margin-top:22px;padding-top:15px}#loginScreen .login-features>div{font-size:9px}#loginScreen .login-features b{font-size:20px}}
+@media(max-width:390px){#loginScreen .login-top{min-height:76px;padding:13px 17px}#loginScreen .login-brand img{width:230px}#loginScreen .login-hero{height:27vh;min-height:190px}#loginScreen .login-panel{padding:23px 18px 20px}#loginScreen .login-panel h1{font-size:25px}#loginScreen .login-features{gap:3px}#loginScreen .login-features>div{font-size:8px}}
+@media(prefers-reduced-motion:reduce){#loginScreen .login-burst.show,#loginScreen .burst-rays{animation:none}#loginScreen .login-burst.show{opacity:1;transform:translate(-50%,-50%) scale(1)}}

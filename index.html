@@ -1,0 +1,114 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>DACHWERK | WE FIX IT – Auftragsverwaltung</title><meta name="theme-color" content="#2d7b54"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><link rel="stylesheet" href="style.css"></head><body><div id="loginScreen" class="login-screen">
+  <div class="login-top">
+    <div class="login-brand"><img src="dachwerk-logo.jpg" alt="DACHWERK – JONAS DITTERT | BAUNATAL – we fix it"></div>
+    <span>PROFESSIONELLE AUFTRAGSVERWALTUNG</span>
+  </div>
+  <div class="login-layout">
+    <section class="login-panel">
+      <div class="login-lock" aria-hidden="true">⌑</div>
+      <h1>Herzlich willkommen</h1>
+      <p class="login-sub">Melde dich an, um auf deine Aufträge, Fotos und Stammdaten zuzugreifen.</p>
+      <form id="authForm">
+        <label for="authEmail"><span class="field-icon" aria-hidden="true">✉</span><span class="sr-only">E-Mail-Adresse</span><input id="authEmail" type="email" autocomplete="email" placeholder="E-Mail-Adresse" required></label>
+        <label class="password-field" for="authPassword"><span class="field-icon" aria-hidden="true">▣</span><span class="sr-only">Passwort</span><input id="authPassword" type="password" autocomplete="current-password" placeholder="Passwort" minlength="6" required><button id="togglePassword" class="password-toggle" type="button" aria-label="Passwort anzeigen" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></label>
+        <button class="login-submit" type="submit" id="loginSubmit"><span class="submit-icon" aria-hidden="true">↪</span><span>Anmelden</span></button>
+      </form>
+      <div class="login-or"><span>oder</span></div>
+      <button class="login-register" id="registerBtn" type="button"><span aria-hidden="true">♙＋</span> Neuen Account anfordern</button>
+      <p class="login-secure">Zugang ist erst nach Freigabe durch den Administrator möglich.</p>
+      <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
+      <div class="login-features"><div><b>☷</b><span>Aufträge verwalten</span></div><div><b>◎</b><span>Baustellenfotos</span></div><div><b>▤</b><span>Serviceberichte</span></div><div><b>⚙</b><span>Material &amp; Stammdaten</span></div></div>
+    </section>
+    <div class="login-hero"><img src="login-roofer.png" alt="DACHWERK Dachdecker in schwarz-grüner Arbeitskleidung auf einem Ziegeldach"><div class="hero-caption"><b>DACHWERK · WE FIX IT</b><span>Alle Aufträge. Ein Team. Ein Überblick.</span></div></div>
+  </div>
+  <div id="loginBurst" class="login-burst" aria-hidden="true"><div class="burst-rays"></div><div class="burst-check">✓</div><strong>Anmeldung erfolgreich!</strong><span>Schön, dass du da bist!</span></div>
+</div><div id="appShell" hidden>
+<header><div class="brand"><img src="dachwerk-logo.jpg" alt="DACHWERK"></div><div class="headright">JONAS DITTERT | BAUNATAL<br>Lübecker Straße 21 · 34225 Baunatal<br>0151 412 055 88 · info@dachwerk.biz<br>www.dachwerk.biz <b class="print-service-title">DACHWERK<br>AUFTRAG / SERVICEBERICHT</b></div></header>
+<nav class="appnav"><button class="navbtn active" data-view="auftraege" onclick="showView('auftraege')">Aufträge</button><button class="navbtn" data-view="auftrag" onclick="newOrder()">Auftrag erstellen</button><button class="navbtn" data-view="buero" onclick="showView('buero')">Büro</button><button class="navbtn" data-view="stammdaten" onclick="showView('stammdaten')">Material</button><button class="navbtn" data-view="freigaben" onclick="showView('freigaben');loadPendingUsers()">Benutzerfreigaben</button><span class="nav-user" id="navUser"></span><button class="navbtn" onclick="signOutDachwerk()">Abmelden</button></nav>
+<main>
+<div id="view-auftraege" class="appview"><section class="card"><div class="section-title"><div><h2>Auftragsübersicht</h2><p class="subtext">Termin, Adresse und Baustellen-Aktionen direkt im Blick.</p></div><div class="toolbar"><button onclick="refreshDemo()">↻ Aktualisieren</button><button class="primary" onclick="newOrder()">+ Neuer Auftrag</button></div></div><div class="storage"><div class="storage-top"><b>Foto-Speicher</b><span id="storageText">Speicherstand wird geladen …</span></div><div class="bar"><i id="storageBar"></i></div><small>Bei Anmeldung: belegten Speicher im Supabase-Fotobucket. Ohne Anmeldung wird nur die lokale Vorschau angezeigt. Der Balken dient zur Orientierung und zeigt nicht das tatsächliche Tariflimit.</small></div><div class="order-search"><label for="orderSearch">Aufträge durchsuchen</label><input id="orderSearch" type="search" placeholder="Name, Auftragsnummer, Adresse oder Angebot …" oninput="renderOrders()" autocomplete="off"></div><div id="orderList" class="order-list"></div></section></div>
+<div id="view-auftrag" class="appview" hidden><div class="print-page">
+<section class="card orderbar"><div><span class="eyebrow">Aktueller Auftrag</span><strong id="currentOrderLabel">Neuer Auftrag</strong></div><label>Status<select id="status"><option value="offen">Offen</option><option value="bearbeitung">In Bearbeitung</option><option value="erledigt">Erledigt</option><option value="abgeschlossen">Abgeschlossen</option></select></label></section>
+<section class="card grid"><label>Auftragsnummer<input id="auftragsnr" readonly></label><label>Angebotsnummer<input id="angebotsnr" placeholder="z. B. ANG-2026-015"></label><label>Auftraggeber<input id="kunde"></label><label>Telefon / E-Mail<input id="kontakt"></label><label>Datum<input id="datum" type="date"></label><label class="wide">Objektadresse<input id="objekt" placeholder="Straße Hausnummer, PLZ Ort"><div class="address-actions"><button type="button" onclick="checkAddress()">📍 Adresse prüfen</button><span id="addressStatus"></span></div></label></section>
+<section class="card appointment"><div class="section-title"><div><h2>Terminart und Termin</h2><p class="subtext">Wähle Montagetermin, Besichtigungstermin oder Reklamation. Diese Angaben erscheinen nicht im PDF.</p></div><button type="button" onclick="addToCalendar()">📅 In Kalender übernehmen</button></div><div class="grid"><label>Terminart<select id="terminArt"><option value="Montagetermin">Montagetermin</option><option value="Besichtigungstermin">Besichtigungstermin</option><option value="Reklamation">Reklamation</option></select></label><label>Datum<input id="montageDatum" type="date"></label><label>Uhrzeit<input id="montageZeit" type="time"></label><label class="wide">Hinweis<input id="montageHinweis" placeholder="z. B. Materialanlieferung vorher"></label></div></section>
+<section class="card"><h2>Ausgeführte Arbeiten</h2><div class="voice-row"><textarea id="arbeiten" rows="5" placeholder="Arbeiten beschreiben …"></textarea><button type="button" class="voice-button" onclick="voiceInput()">🎙️ Spracheingabe</button></div></section>
+<section class="card"><div class="section-title"><h2>Mitarbeiter Zeiterfassung</h2><button onclick="addEmployeeRow()">+ Mitarbeiter</button></div><div class="employee-columns" aria-hidden="true"><span>Mitarbeiter</span><span>Beginn</span><span>Ende</span><span>Pause (Min.)</span><span>Arbeitsstunden</span><span></span></div><div class="employee-mobile-columns" aria-hidden="true"><span>Beginn</span><span>Ende</span><span>Pause (Min.)</span><span>Arbeitsstunden</span></div><div id="employeeRows"></div><div id="employeeSummary" class="employee-summary">Summe Arbeitsstunden: 0,00 h</div></section>
+<section class="card"><div class="section-title"><h2>Baustelleneinrichtung</h2><button onclick="addSetupRow()">+ Position</button></div><div class="rowhead setuphead"><span>Position</span><span>Verbrauch</span><span>Einheit</span><span></span></div><div id="baustellenkosten"></div></section>
+<section class="card travel-card"><div class="section-title"><div><h2>Fahrtkosten</h2><p class="subtext">Pro Baustellentag eine Zeile. Standard: 49,00 € · Baunatal: 29,00 € (Betrag bei Bedarf anpassen).</p></div><button type="button" onclick="addFahrtkosten()">+ Neue Fahrtkosten</button></div><div class="travel-columns"><span>Datum</span><span>Betrag (€)</span><span></span></div><div id="fahrtkostenRows"></div><div id="fahrtkostenSum" class="employee-summary">Summe Fahrtkosten: 0,00 €</div></section>
+<section class="card"><div class="section-title"><h2>Material – Verbrauch</h2><button onclick="addMaterial()">+ Material</button></div><div class="rowhead mathead"><span>Material</span><span>Verbrauch</span><span>Einheit</span><span></span></div><div id="material"></div></section>
+<section class="card signature-card"><h2>Kundenbestätigung</h2><p class="signature-intro">Der Auftraggeber bestätigt mit seiner Unterschrift die oben aufgeführten Angaben und Leistungen.</p><div class="signature-grid"><div class="signature-block location-block"><b>Ort</b><input id="signOrt" placeholder="Ort"><b class="sign-date-label">Datum</b><input id="signDatum" type="date"></div><div class="signature-block"><b>Unterschrift Auftraggeber</b><canvas id="sigKunde"></canvas><div class="signature-actions"><button type="button" onclick="clearSig('sigKunde')">Löschen</button></div></div><div class="signature-block"><b>Unterschrift Dachwerk</b><canvas id="sigFirma"></canvas><div class="signature-actions"><button type="button" onclick="clearSig('sigFirma')">Löschen</button></div></div></div><p class="signature-terms"><b>Bitte vor der Unterschrift lesen:</b> Der Auftraggeber erklärt mit Unterschrift die ordnungsgemäße Ausführung der Arbeiten. Mit Auftragserteilung erklärt sich der Auftraggeber mit unseren Geschäftsbedingungen einverstanden. Es gelten die Stundensätze, die auf unserer Internetseite veröffentlicht sind. Die Arbeitszeit beginnt mit Verlassen unseres Betriebes in Baunatal und endet bei Rückkehr. Materialkosten werden je nach Verbrauch in Rechnung gestellt. Da es sich bei Arbeiten an Dächern um eine sehr gefahrenträchtige Arbeit handelt, entstehen Kosten der Baustelleneinrichtung. Die Baustelleneinrichtung beinhaltet Sicherungsmaßnahmen unterschiedlicher Art, die vom Gesetzgeber bei Dacharbeiten vorgeschrieben sind. Auch bei Festpreisangeboten können Zusatzkosten entstehen. Sie erhalten eine Rechnung von uns, die Zahlung ist dann innerhalb 8 Tagen ohne Abzug fällig. Unsere aktuellen Stundensätze und vollständigen Geschäftsbedingungen können Sie jederzeit auf unserer Internetseite einsehen: <b>www.dachwerk.biz</b>.</p></section>
+<section class="card photos-card"><div class="section-title"><h2>Baustellenfotos</h2><label class="filebutton">+ Bilder hinzufügen<input id="photoInput" type="file" accept="image/*" multiple onchange="addPhotos(event)"></label></div><p class="photohelp">Fotos werden automatisch verkleinert und komprimiert. Jedes Foto darf nur einmal in der Liste und im PDF erscheinen.</p><div id="photoPreview" class="photo-preview"></div></section>
+<section class="actions"><button class="primary" onclick="saveOrder()">Auftrag speichern</button><button onclick="createAndSendPDF()">PDF erstellen und senden</button><button onclick="showView('auftraege')">Auftragsübersicht</button></section>
+</div></div>
+<div id="view-buero" class="appview" hidden><section class="card"><div class="section-title"><div><h2>Büro</h2><p class="subtext">Hier findest du alle Aufträge, die als erledigt oder abgeschlossen markiert wurden.</p></div><button onclick="refreshDemo()">↻ Aktualisieren</button></div><div id="officeList" class="order-list"></div></section></div>
+<div id="view-stammdaten" class="appview" hidden><section class="card master-card"><div class="section-title"><div><h2>Zentrale Materialliste</h2><p class="subtext">In der Vorschau lokal. Später zentral für alle DACHWERK-Nutzer über Supabase.</p></div><div><button onclick="refreshDemo()">↻ Aktualisieren</button><button class="primary" onclick="addMaterialMaster()">+ Material anlegen</button></div></div><div class="masterhead materialmasterhead"><span>Material</span><span>Einheit</span><span></span></div><div id="materialMaster"></div></section><section class="card master-card"><div class="section-title"><div><h2>Baustelleneinrichtung</h2><p class="subtext">Nur Position, Verbrauch und Einheit – keine Preise.</p></div><button class="primary" onclick="addSetupMaster()">+ Position anlegen</button></div><div class="masterhead setupmasterhead"><span>Bezeichnung</span><span>Einheit</span><span></span></div><div id="setupMaster"></div></section></div>
+<div id="view-freigaben" class="appview" hidden><section class="card"><div class="section-title"><div><h2>Benutzerfreigaben</h2><p class="subtext">Neue Konten prüfen und freischalten.</p></div><button onclick="loadPendingUsers()">↻ Aktualisieren</button></div><div id="pendingMessage" class="subtext">Offene Freigaben werden geladen …</div><div id="pendingUsers" class="pending-users"></div></section></div></main><script src="app.js"></script>
+<div id="photoEditor" class="photo-editor" hidden aria-hidden="true"><div class="photo-editor-panel"><div class="photo-editor-head"><b>Bild markieren</b><button type="button" onclick="closePhotoEditor()">×</button></div><p><b>Direkt auf dem Foto zeichnen:</b> Finger aufsetzen und um die Stelle ziehen. Du kannst sofort rot einkreisen oder durchstreichen.</p><div class="photo-canvas-wrap"><canvas id="photoCanvas"></canvas></div><div class="photo-editor-actions"><button type="button" onclick="resetPhotoMarking()">Markierung löschen</button><button type="button" class="primary" onclick="savePhotoMarking()">Markierung übernehmen</button></div></div></div>
+<div id="pdfTemplate" aria-hidden="true">
+  <div class="pdf-sheet">
+    <div class="pdf-head">
+      <div class="pdf-logo"><img src="dachwerk-logo.jpg"></div>
+      <div class="pdf-company">JONAS DITTERT | BAUNATAL<br>Lübecker Straße 21 · 34225 Baunatal<br>0151 412 055 88 · info@dachwerk.biz<br>www.dachwerk.biz</div>
+      <div class="pdf-title">DACHWERK<br><span>AUFTRAG /<br>SERVICEBERICHT</span></div>
+    </div>
+    <table class="pdf-info">
+      <tr><th>Auftragsnummer</th><th>Angebotsnummer</th><th>Auftraggeber</th><th>Datum</th></tr>
+      <tr><td data-p="auftragsnr"></td><td data-p="angebotsnr"></td><td data-p="kunde"></td><td data-p="datum"></td></tr>
+      <tr><th>Telefon / E-Mail</th><th colspan="3">Objekt / Baustelle / Adresse</th></tr>
+      <tr><td data-p="kontakt"></td><td colspan="3" data-p="objekt"></td></tr>
+    </table>
+
+    <div class="pdf-section"><div class="pdf-bar">Ausgeführte Arbeiten</div><div class="pdf-work" data-p="arbeiten"></div></div>
+
+    <div class="pdf-section">
+      <div class="pdf-bar">Mitarbeiter Zeiterfassung</div>
+      <table class="pdf-table">
+        <thead><tr><th>Mitarbeiter</th><th>Beginn</th><th>Ende</th><th>Pause (Min.)</th><th>Arbeitsstunden</th></tr></thead>
+        <tbody id="pdfEmployees"></tbody>
+        <tfoot><tr><td colspan="4">Summe Arbeitsstunden</td><td id="pdfEmployeeSum"></td></tr></tfoot>
+      </table>
+    </div>
+
+    <div class="pdf-section">
+      <div class="pdf-bar">Fahrtkosten</div>
+      <table class="pdf-table"><thead><tr><th>Datum</th><th>Betrag</th></tr></thead>
+      <tbody id="pdfFahrtRows"></tbody><tfoot><tr><td>Summe Fahrtkosten</td><td id="pdfFahrtSum"></td></tr></tfoot></table>
+    </div>
+
+    <div class="pdf-section">
+      <div class="pdf-bar">Baustelleneinrichtung</div>
+      <table class="pdf-table pdf-setup-table"><thead><tr><th>Baustelleneinrichtung</th><th>Verbrauch</th><th>Einheit</th></tr></thead><tbody id="pdfSetup"></tbody></table>
+    </div>
+
+    <div class="pdf-section">
+      <div class="pdf-bar">Material – Verbrauch</div>
+      <table class="pdf-table pdf-material-table"><thead><tr><th>Material</th><th>Verbrauch</th><th>Einheit</th></tr></thead><tbody id="pdfMaterial"></tbody></table>
+    </div>
+
+    <div class="pdf-section pdf-confirm">
+      <div class="pdf-bar">Kundenbestätigung</div>
+      <div class="pdf-confirm-text">Der Auftraggeber bestätigt mit seiner Unterschrift die oben aufgeführten Angaben und Leistungen.</div>
+      <table class="pdf-sign">
+        <tr><th>Ort / Datum</th><th>Unterschrift Auftraggeber</th><th>Unterschrift Mitarbeiter</th></tr>
+        <tr>
+          <td><span id="pdfOrt"></span><br><span id="pdfDatum2"></span></td>
+          <td><img id="pdfSigKunde"></td>
+          <td><img id="pdfSigFirma"></td>
+        </tr>
+      </table>
+      <div class="pdf-agb">Der Auftraggeber erklärt mit Unterschrift die ordnungsgemäße Ausführung der Arbeiten. Mit Auftragserteilung erklärt sich der Auftraggeber mit unseren Geschäftsbedingungen einverstanden. Es gelten die Stundensätze, die auf unserer Internetseite veröffentlicht sind. Die Arbeitszeit beginnt mit Verlassen unseres Betriebes in Baunatal und endet bei Rückkehr. Materialkosten werden je nach Verbrauch in Rechnung gestellt. Da es sich bei Arbeiten an Dächern um eine sehr gefahrenträchtige Arbeit handelt, entstehen Kosten der Baustelleneinrichtung. Die Baustelleneinrichtung beinhaltet Sicherungsmaßnahmen unterschiedlicher Art, die vom Gesetzgeber bei Dacharbeiten vorgeschrieben sind. Auch bei Festpreisangeboten können Zusatzkosten entstehen. Sie erhalten eine Rechnung von uns, die Zahlung ist dann innerhalb 8 Tagen ohne Abzug fällig. Unsere aktuellen Stundensätze und vollständigen Geschäftsbedingungen können Sie jederzeit auf unserer Internetseite einsehen.</div>
+    </div>
+    <div class="pdf-footer">GF: Jonas Dittert · AG Fritzlar HRB 12775 · USt.-ID-Nr.: DE349017021 <span>www.dachwerk.biz</span></div>
+    <div id="pdfPhotoPages"></div>
+  </div>
+</div>
+
+
+<div id="consumptionModal" class="consumption-modal" hidden role="dialog" aria-modal="true" aria-labelledby="consumptionTitle">
+  <div class="consumption-dialog">
+    <div class="consumption-dialog-head"><div><h2 id="consumptionTitle">Verbrauch bearbeiten</h2><p>Hier kannst du Mengen, Längen und mehrere Produkte gut lesbar eingeben.</p></div><button type="button" class="consumption-close" onclick="closeConsumptionEditor(false)" aria-label="Schließen">×</button></div>
+    <textarea id="consumptionText" rows="6" placeholder="z. B. 12 m, 3 Stück, zusätzlich …"></textarea>
+    <div class="consumption-actions"><button type="button" class="voice-button" onclick="voiceConsumption()">🎙️ Spracheingabe</button><span></span><button type="button" onclick="closeConsumptionEditor(false)">Abbrechen</button><button type="button" class="primary" onclick="closeConsumptionEditor(true)">Übernehmen</button></div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="auth.js"></script></div></body></html>
