@@ -636,3 +636,42 @@ body:not(.authenticated)>header,body:not(.authenticated)>.appnav,body:not(.authe
 @media(max-width:800px){#loginScreen .login-top{position:relative;width:100%;height:auto;min-height:88px;padding:17px 22px;background:#fff;box-sizing:border-box}#loginScreen .login-brand img{width:min(68vw,270px)}#loginScreen .login-layout{display:flex;flex-direction:column;min-height:calc(100vh - 88px)}#loginScreen .login-hero{order:0;min-height:32vh;height:32vh;max-height:310px;width:100%}#loginScreen .login-hero img{object-position:center 42%}#loginScreen .hero-caption{left:6%;bottom:6%}#loginScreen .hero-caption b{font-size:10px;letter-spacing:2px}#loginScreen .hero-caption span{font-size:18px}#loginScreen .login-panel{order:1;min-height:auto;padding:28px clamp(20px,6vw,42px) 24px;box-shadow:none}#loginScreen .login-lock{width:44px;height:44px;font-size:26px;margin-bottom:13px}#loginScreen .login-panel h1{font-size:28px}#loginScreen .login-sub{font-size:14px;margin-bottom:20px}#loginScreen .login-panel form label{height:58px;margin-bottom:12px}#loginScreen .login-submit{min-height:58px}#loginScreen .login-register{min-height:56px}#loginScreen .login-features{margin-top:22px;padding-top:15px}#loginScreen .login-features>div{font-size:9px}#loginScreen .login-features b{font-size:20px}}
 @media(max-width:390px){#loginScreen .login-top{min-height:76px;padding:13px 17px}#loginScreen .login-brand img{width:230px}#loginScreen .login-hero{height:27vh;min-height:190px}#loginScreen .login-panel{padding:23px 18px 20px}#loginScreen .login-panel h1{font-size:25px}#loginScreen .login-features{gap:3px}#loginScreen .login-features>div{font-size:8px}}
 @media(prefers-reduced-motion:reduce){#loginScreen .login-burst.show,#loginScreen .burst-rays{animation:none}#loginScreen .login-burst.show{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+
+
+/* DACHWERK PDF PATCH 2026-10: sichere Druckränder und genau eine Seite je Fotoblock */
+@media print {
+  @page { size: A4 portrait; margin: 0 !important; }
+  html, body { width: 210mm !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
+  #pdfTemplate, #pdfTemplate.printing {
+    width: 210mm !important; margin: 0 !important; padding: 0 !important;
+    overflow: visible !important; position: static !important;
+  }
+  #pdfTemplate .pdf-sheet {
+    box-sizing: border-box !important;
+    width: 194mm !important; min-width: 0 !important; max-width: 194mm !important;
+    min-height: 285mm !important; height: auto !important;
+    margin: 0 auto !important; padding: 4mm 0 3mm !important;
+    overflow: visible !important;
+  }
+  #pdfTemplate #pdfPhotoPages { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+  #pdfTemplate .pdf-photo-page {
+    box-sizing: border-box !important;
+    width: 194mm !important; min-width: 0 !important; max-width: 194mm !important;
+    height: 285mm !important; min-height: 285mm !important; max-height: 285mm !important;
+    margin: 0 auto !important; padding: 4mm 0 2mm !important;
+    overflow: hidden !important;
+    break-before: page !important; page-break-before: always !important;
+    break-after: avoid-page !important; page-break-after: avoid !important;
+    break-inside: avoid !important; page-break-inside: avoid !important;
+  }
+  #pdfTemplate .pdf-photo-head { height: 16mm !important; }
+  #pdfTemplate .pdf-photo-grid {
+    height: 258mm !important; max-height: 258mm !important;
+    margin-top: 2mm !important; box-sizing: border-box !important;
+    display: grid !important; grid-template-columns: minmax(0,1fr) minmax(0,1fr) !important;
+    grid-template-rows: minmax(0,1fr) minmax(0,1fr) !important; gap: 3mm !important;
+    break-inside: avoid !important; page-break-inside: avoid !important;
+  }
+  #pdfTemplate .pdf-photo-item { min-width: 0 !important; min-height: 0 !important; overflow: hidden !important; break-inside: avoid !important; page-break-inside: avoid !important; }
+  #pdfTemplate .pdf-photo-item img { max-width: 100% !important; max-height: 100% !important; object-fit: contain !important; }
+}

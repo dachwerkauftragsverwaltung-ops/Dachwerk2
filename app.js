@@ -1,6 +1,6 @@
 let photos=[], currentOrderId=null; const ORDERS_KEY='dw_preview_orders_v3', MAT_KEY='dw_preview_materials_v3', SET_KEY='dw_preview_setup_v3';
 const $=id=>document.getElementById(id), uid=()=> (window.crypto&&crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)}));
-let cloudBusy=false, cloudInitialized=false, cloudChannel=null, cloudRefreshPending=false, masterEditing=false;
+let cloudBusy=false, cloudInitialized=false, cloudChannel=null, cloudRefreshPending=false;
 function sb(){return window.dachwerkSupabase||null}
 function isCloudUser(){return !!(sb()&&window.dachwerkUser&&window.dachwerkProfile&&window.dachwerkProfile.approved)}
 function cloudError(err,where){console.error('DACHWERK Supabase '+where,err);alert(where+' fehlgeschlagen: '+(err?.message||'Unbekannter Fehler'));}
@@ -55,8 +55,8 @@ function addEmployeeRow(d={}){
 }
 function addMaterial(d={}){let r=document.createElement('div');r.className='matrow';let sel=document.createElement('select');sel.innerHTML='<option value="">Material auswählen …</option>'+materials.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');sel.value=d.id||'';let q=input('Verbrauch',d.qty,'qty'),u=input('Einheit',d.unit,'unit');u.readOnly=true;sel.onchange=()=>{let m=materials.find(x=>x.id===sel.value);u.value=m?.unit||''};let b=document.createElement('button');b.type='button';b.textContent='×';b.onclick=()=>r.remove();r.append(sel,q,u,b);$('material').appendChild(r);if(d.id)sel.onchange()}
 function addSetupRow(d={}){let r=document.createElement('div');r.className='setuprow';let sel=document.createElement('select');sel.innerHTML='<option value="">Position auswählen …</option>'+setups.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');sel.value=d.id||'';let q=input('Verbrauch',d.qty,'qty'),u=input('Einheit',d.unit,'unit');u.readOnly=true;sel.onchange=()=>{let m=setups.find(x=>x.id===sel.value);u.value=m?.unit||''};let b=document.createElement('button');b.type='button';b.textContent='×';b.onclick=()=>r.remove();r.append(sel,q,u,b);$('baustellenkosten').appendChild(r);if(d.id)sel.onchange()}
-async function addMaterialMaster(){materials.push({id:uid(),name:'',unit:'Stück'});write(MAT_KEY,materials);masterEditing=true;renderMasters();const fields=$('materialMaster').querySelectorAll('.mname');const field=fields[fields.length-1];if(field){field.focus();field.scrollIntoView({block:'nearest',behavior:'smooth'})}await saveMasterRows('dachwerk_materials',materials)}
-async function addSetupMaster(){setups.push({id:uid(),name:'',unit:'Stück'});write(SET_KEY,setups);masterEditing=true;renderMasters();const fields=$('setupMaster').querySelectorAll('.mname');const field=fields[fields.length-1];if(field){field.focus();field.scrollIntoView({block:'nearest',behavior:'smooth'})}await saveMasterRows('dachwerk_setup_items',setups)}
+async function addMaterialMaster(){materials.push({id:uid(),name:'',unit:'Stück'});write(MAT_KEY,materials);renderMasters();await saveMasterRows('dachwerk_materials',materials)}
+async function addSetupMaster(){setups.push({id:uid(),name:'',unit:'Stück'});write(SET_KEY,setups);renderMasters();await saveMasterRows('dachwerk_setup_items',setups)}
 async function saveMasterRows(table,rows){if(!isCloudUser())return;const payload=rows.filter(x=>x.name?.trim()).map(x=>table==='dachwerk_materials'?{id:x.id,material:x.name.trim(),einheit:x.unit||''}:{id:x.id,bezeichnung:x.name.trim(),einheit:x.unit||''});if(!payload.length)return;const {error}=await sb().from(table).upsert(payload,{onConflict:'id'});if(error)cloudError(error,'Stammdaten speichern')}
 async function deleteMasterRow(table,id){if(!isCloudUser())return;const {error}=await sb().from(table).delete().eq('id',id);if(error)cloudError(error,'Stammdaten löschen')}
 function renderMasters(){let mbox=$('materialMaster');mbox.innerHTML='';materials.forEach((m,i)=>{let r=document.createElement('div');r.className='masterrow';r.innerHTML='<input class="mname"><input class="munit"><button>×</button>';r.querySelector('.mname').value=m.name;r.querySelector('.munit').value=m.unit;let save=()=>{m.name=r.querySelector('.mname').value;m.unit=r.querySelector('.munit').value;write(MAT_KEY,materials)};r.querySelectorAll('input').forEach(x=>{x.oninput=save;x.onchange=()=>{save();saveMasterRows('dachwerk_materials',[m])}});r.querySelector('button').onclick=async()=>{materials.splice(i,1);write(MAT_KEY,materials);renderMasters();await deleteMasterRow('dachwerk_materials',m.id)};mbox.appendChild(r)});let sbox=$('setupMaster');sbox.innerHTML='';setups.forEach((m,i)=>{let r=document.createElement('div');r.className='masterrow';r.innerHTML='<input class="mname"><input class="munit"><button>×</button>';r.querySelector('.mname').value=m.name;r.querySelector('.munit').value=m.unit;let save=()=>{m.name=r.querySelector('.mname').value;m.unit=r.querySelector('.munit').value;write(SET_KEY,setups)};r.querySelectorAll('input').forEach(x=>{x.oninput=save;x.onchange=()=>{save();saveMasterRows('dachwerk_setup_items',[m])}});r.querySelector('button').onclick=async()=>{setups.splice(i,1);write(SET_KEY,setups);renderMasters();await deleteMasterRow('dachwerk_setup_items',m.id)};sbox.appendChild(r)})}
@@ -125,23 +125,14 @@ async function loadCloudData(showMessage=false){if(!isCloudUser()||cloudBusy)ret
 function validUuid(v){return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v||'')}
 function scheduleCloudRefresh(){
   const active=document.activeElement;
-  if(masterEditing || (active && active.matches('#materialMaster input, #setupMaster input'))){cloudRefreshPending=true;return;}
+  if(active && active.matches('#materialMaster input, #setupMaster input')){cloudRefreshPending=true;return;}
   loadCloudData(false);
 }
 ['materialMaster','setupMaster'].forEach(id=>{
-  document.addEventListener('focusin',e=>{
-    if(e.target && e.target.matches('#'+id+' input')) masterEditing=true;
-  },true);
   document.addEventListener('focusout',e=>{
-    if(!e.target || !e.target.matches('#'+id+' input')) return;
-    setTimeout(()=>{
-      const active=document.activeElement;
-      const stillEditing=!!(active && active.matches('#materialMaster input, #setupMaster input'));
-      if(!stillEditing){
-        masterEditing=false;
-        if(cloudRefreshPending){cloudRefreshPending=false;loadCloudData(false)}
-      }
-    },350);
+    if(e.target && e.target.matches('#'+id+' input')){
+      setTimeout(()=>{if(cloudRefreshPending){cloudRefreshPending=false;loadCloudData(false)}},250);
+    }
   },true);
 });
 window.initDachwerkCloud=async function(){if(cloudInitialized||!isCloudUser())return;cloudInitialized=true;await loadCloudData(false);if(cloudChannel)sb().removeChannel(cloudChannel);cloudChannel=sb().channel('dachwerk-live-sync').on('postgres_changes',{event:'*',schema:'public',table:'dachwerk_orders'},scheduleCloudRefresh).on('postgres_changes',{event:'*',schema:'public',table:'dachwerk_materials'},scheduleCloudRefresh).on('postgres_changes',{event:'*',schema:'public',table:'dachwerk_setup_items'},scheduleCloudRefresh).subscribe();};
