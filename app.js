@@ -269,3 +269,59 @@ async function createBackup(){
 }
 
 window.addEventListener('load',()=>{canvasSetup('sigKunde');canvasSetup('sigFirma');resetForm();renderOrders();renderOffice();renderMasters();updateStorage()});
+
+/* Tagesplan: separate map view, does not alter order records or signature handling. */
+let tagesplanMap=null,tagesplanMarkers=[],tagesplanRouteLine=null,tagesplanLocations=[],tagesplanSelected=[];
+const TAGESPLAN_GEO_KEY='dw_tagesplan_geocodes_v1';
+function initTagesplan(){
+ const date=$('tagesplanDate');if(date&&!date.value)date.value=new Date().toISOString().slice(0,10);
+ if(!window.L){$('tagesplanMessage').textContent='Die Kartenbibliothek konnte nicht geladen werden. Bitte Internetverbindung prüfen.';return}
+ if(!tagesplanMap){tagesplanMap=L.map('tagesplanMap').setView([51.1,9.1],8);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap-Mitwirkende'}).addTo(tagesplanMap)}
+ setTimeout(()=>tagesplanMap.invalidateSize(),100);renderTagesplanStops();
+}
+function tagesplanAddress(o){return String(o.objekt||'').trim()}
+function tagesplanOrderLabel(o){return (o.auftragsnr||'Auftrag')+' · '+(o.kunde||'Ohne Auftraggeber')}
+function tagesplanGeocodes(){try{return JSON.parse(localStorage.getItem(TAGESPLAN_GEO_KEY)||'{}')}catch{return {}}}
+function tagesplanDistance(a,b){const rad=x=>x*Math.PI/180,R=6371,dLat=rad(b.lat-a.lat),dLon=rad(b.lng-a.lng),x=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
+async function loadTagesplanLocations(){
+ initTagesplan();if(!window.L)return;
+ const btn=$('tagesplanLoadBtn');if(btn){btn.disabled=true;btn.textContent='Adressen werden geladen …'}
+ const eligible=orders.filter(o=>tagesplanAddress(o)),geo=tagesplanGeocodes();tagesplanLocations=[];tagesplanSelected=[];
+ tagesplanMarkers.forEach(m=>tagesplanMap.removeLayer(m));tagesplanMarkers=[];
+ if(tagesplanRouteLine){tagesplanMap.removeLayer(tagesplanRouteLine);tagesplanRouteLine=null}
+ let hits=0,misses=0;
+ try{
+  for(let i=0;i<eligible.length;i++){
+   const o=eligible[i],addr=tagesplanAddress(o);let point=geo[addr];
+   if(!point){
+    $('tagesplanMessage').textContent='Suche Kartenposition '+(i+1)+' von '+eligible.length+' …';
+    try{const url='https://photon.komoot.io/api/?limit=1&q='+encodeURIComponent(addr+(addr.toLowerCase().includes('deutschland')?'':', Deutschland'));const res=await fetch(url);if(res.ok){const j=await res.json(),f=j.features&&j.features[0];if(f){point={lat:f.geometry.coordinates[1],lng:f.geometry.coordinates[0],label:f.properties.name||addr};geo[addr]=point;localStorage.setItem(TAGESPLAN_GEO_KEY,JSON.stringify(geo));}}}catch(e){console.warn('Geocoding fehlgeschlagen',addr,e)}
+    await new Promise(resolve=>setTimeout(resolve,1100));
+   }
+   if(point&&Number.isFinite(Number(point.lat))&&Number.isFinite(Number(point.lng))){
+    const item={id:o.id,order:o,lat:Number(point.lat),lng:Number(point.lng),address:addr};tagesplanLocations.push(item);
+    const popup='<b>'+escapeTagesplan(tagesplanOrderLabel(o))+'</b><br>'+escapeTagesplan(addr)+'<br>'+(o.montage?.datum?escapeTagesplan(o.montage.datum):'Kein Termin')+'<br><button type="button" onclick="addTagesplanStop(&quot;'+escapeTagesplan(o.id)+'&quot;)">Stopp hinzufügen</button>';
+    const m=L.marker([item.lat,item.lng]).addTo(tagesplanMap).bindPopup(popup);tagesplanMarkers.push(m);hits++;
+   }else misses++;
+  }
+  if(tagesplanLocations.length){const group=L.featureGroup(tagesplanMarkers);tagesplanMap.fitBounds(group.getBounds().pad(.12),{maxZoom:13})}
+  $('tagesplanMessage').textContent='Kartenpositionen gefunden: '+hits+'. Ohne Treffer: '+misses+'. Positionen werden auf diesem Gerät zwischengespeichert. Die angezeigte Entfernung zwischen Stopps ist die Luftlinie, keine Fahrstrecke.';
+  renderTagesplanStops();
+ }finally{if(btn){btn.disabled=false;btn.textContent='Baustellen laden'}}
+}
+function escapeTagesplan(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function addTagesplanStop(id){if(!tagesplanSelected.includes(id)){tagesplanSelected.push(id);renderTagesplanStops()}if(tagesplanMap){const x=tagesplanLocations.find(v=>v.id===id);if(x)tagesplanMap.setView([x.lat,x.lng],Math.max(tagesplanMap.getZoom(),12))}}
+function removeTagesplanStop(id){tagesplanSelected=tagesplanSelected.filter(x=>x!==id);renderTagesplanStops()}
+function clearTagesplanRoute(){tagesplanSelected=[];renderTagesplanStops()}
+function renderTagesplanStops(){
+ const box=$('tagesplanStops'),dist=$('tagesplanDistances');if(!box||!dist)return;box.innerHTML='';
+ const selected=tagesplanSelected.map(id=>tagesplanLocations.find(x=>x.id===id)).filter(Boolean);
+ if(!tagesplanLocations.length)box.innerHTML='<p class="subtext">Noch keine Baustellen geladen. Tippe auf „Baustellen laden“.</p>';
+ else tagesplanLocations.forEach(x=>{const chosen=tagesplanSelected.includes(x.id),row=document.createElement('div');row.className='tagesplan-stop';row.innerHTML='<div class="stop-info"><b>'+escapeTagesplan(tagesplanOrderLabel(x.order))+'</b><small>'+escapeTagesplan(x.address)+'</small></div><div class="tagesplan-stop-actions">'+(chosen?'<button onclick="removeTagesplanStop(&quot;'+escapeTagesplan(x.id)+'&quot;)">Entfernen</button>':'<button onclick="addTagesplanStop(&quot;'+escapeTagesplan(x.id)+'&quot;)">Stopp hinzufügen</button>')+'</div>';box.appendChild(row)});
+ if(tagesplanRouteLine&&tagesplanMap){tagesplanMap.removeLayer(tagesplanRouteLine);tagesplanRouteLine=null}
+ if(selected.length<2){dist.textContent=selected.length?'Wähle mindestens einen weiteren Stopp.':'Noch keine Stopps ausgewählt.';return}
+ let lines=[],coords=[],total=0;
+ for(let i=0;i<selected.length;i++){coords.push([selected[i].lat,selected[i].lng]);if(i>0){const km=tagesplanDistance(selected[i-1],selected[i]);total+=km;lines.push(i+'. '+tagesplanOrderLabel(selected[i-1].order)+' → '+tagesplanOrderLabel(selected[i].order)+': ca. '+km.toFixed(1).replace('.',',')+' km (Luftlinie)')}}
+ if(tagesplanMap)tagesplanRouteLine=L.polyline(coords,{color:'#19734a',weight:4,dashArray:'8 7'}).addTo(tagesplanMap);
+ dist.textContent=lines.join('\n')+'\n\nGesamte Luftlinie: ca. '+total.toFixed(1).replace('.',',')+' km';
+}
