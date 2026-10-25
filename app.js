@@ -137,12 +137,12 @@ function scheduleCloudRefresh(){
 });
 window.initDachwerkCloud=async function(){if(cloudInitialized||!isCloudUser())return;cloudInitialized=true;await loadCloudData(false);if(cloudChannel)sb().removeChannel(cloudChannel);cloudChannel=sb().channel('dachwerk-live-sync').on('postgres_changes',{event:'*',schema:'public',table:'dachwerk_orders'},scheduleCloudRefresh).on('postgres_changes',{event:'*',schema:'public',table:'dachwerk_materials'},scheduleCloudRefresh).on('postgres_changes',{event:'*',schema:'public',table:'dachwerk_setup_items'},scheduleCloudRefresh).subscribe();};
 function voiceInput(){if(!('webkitSpeechRecognition'in window||'SpeechRecognition'in window)){alert('Spracheingabe wird von diesem Browser nicht unterstützt.');return}let R=window.SpeechRecognition||window.webkitSpeechRecognition,r=new R();r.lang='de-DE';r.interimResults=false;r.onresult=e=>{$('arbeiten').value+=($('arbeiten').value?'\n':'')+e.results[0][0].transcript};r.start()}
-function canvasSetup(id){let c=$(id),ctx=c.getContext('2d'),draw=false;function size(){let d=window.devicePixelRatio||1,w=c.clientWidth||420,h=160;c.width=w*d;c.height=h*d;ctx.scale(d,d);ctx.lineWidth=2;ctx.strokeStyle='#174a83';ctx.lineCap='round'}size();let pos=e=>{let r=c.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};c.addEventListener('pointerdown',e=>{draw=true;c.setPointerCapture(e.pointerId);let [x,y]=pos(e);ctx.beginPath();ctx.moveTo(x,y)});c.addEventListener('pointermove',e=>{if(!draw)return;let[x,y]=pos(e);ctx.lineTo(x,y);ctx.stroke()});['pointerup','pointercancel'].forEach(x=>c.addEventListener(x,()=>draw=false))}
-function clearSig(id){let c=$(id),ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height)}
-function loadSignature(id,data){const c=$(id);clearSig(id);if(!data)return;const img=new Image();img.onload=()=>{const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height)};img.src=data}
+function canvasSetup(id){let c=$(id),ctx=c.getContext('2d'),draw=false;function size(){const d=window.devicePixelRatio||1,w=c.clientWidth||420,h=160;const old=c.__signatureSource&&!c.__signatureDirty?c.__signatureSource:(()=>{try{return c.__signatureDirty?c.toDataURL('image/png'):null}catch(e){return null}})();c.width=Math.round(w*d);c.height=Math.round(h*d);c.__dpr=d;ctx.setTransform(d,0,0,d,0,0);ctx.lineWidth=2;ctx.strokeStyle='#174a83';ctx.lineCap='round';ctx.lineJoin='round';if(old){const img=new Image();img.onload=()=>{if(c.__signatureSource===old||c.__signatureDirty){ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);ctx.setTransform(c.__dpr||1,0,0,c.__dpr||1,0,0)}};img.src=old}}size();let pos=e=>{let r=c.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};c.addEventListener('pointerdown',e=>{draw=true;c.__signatureDirty=true;c.__signatureSource=null;c.setPointerCapture(e.pointerId);let [x,y]=pos(e);ctx.beginPath();ctx.moveTo(x,y)});c.addEventListener('pointermove',e=>{if(!draw)return;let[x,y]=pos(e);ctx.lineTo(x,y);ctx.stroke()});['pointerup','pointercancel','pointerleave'].forEach(x=>c.addEventListener(x,()=>draw=false))}
+function clearSig(id){let c=$(id),ctx=c.getContext('2d');ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,c.width,c.height);ctx.setTransform(c.__dpr||1,0,0,c.__dpr||1,0,0);c.__signatureSource=null;c.__signatureDirty=false}
+function loadSignature(id,data){const c=$(id);clearSig(id);if(!data)return;c.__signatureSource=data;c.__signatureDirty=false;const img=new Image();img.onload=()=>{if(c.__signatureSource!==data||c.__signatureDirty)return;const ctx=c.getContext('2d');ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);ctx.setTransform(c.__dpr||1,0,0,c.__dpr||1,0,0);c.__signatureLoaded=true};img.onerror=()=>{console.warn('Unterschrift konnte nicht geladen werden:',id)};img.src=data}
 function escPdf(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function fmtDate(v){if(!v)return '';let p=v.split('-');return p.length===3?p[2]+'.'+p[1]+'.'+p[0]:v}
-function sigData(id){let c=$(id);try{return c&&c.toDataURL('image/png')}catch(e){return ''}}
+function sigData(id){let c=$(id);if(!c)return '';if(c.__signatureSource&&!c.__signatureDirty)return c.__signatureSource;try{return c.toDataURL('image/png')}catch(e){return ''}}
 function pdfRows(items, names){
   return items.length ? items.map(x=>'<tr>'+names.map(n=>'<td>'+escPdf(x[n]||'')+'</td>').join('')+'</tr>').join('') : '<tr><td colspan="'+names.length+'" class="pdf-empty">Keine Positionen eingetragen.</td></tr>';
 }
@@ -223,4 +223,49 @@ function createAndSendPDF(){
   };
   window.addEventListener('afterprint',restorePdfTemplate,{once:true});
 }
+
+async function createBackup(){
+  if(!isCloudUser()){alert('Bitte zuerst anmelden und auf die Benutzerfreigabe warten. Für ein vollständiges Backup muss Dachwerk mit Supabase verbunden sein.');return}
+  if(typeof JSZip==='undefined'){alert('Die ZIP-Bibliothek konnte nicht geladen werden. Bitte Internetverbindung prüfen und erneut versuchen.');return}
+  const button=[...document.querySelectorAll('.navbtn')].find(b=>b.textContent.trim()==='Backup erstellen');
+  if(button){button.disabled=true;button.textContent='Backup wird erstellt …'}
+  try{
+    const client=sb();
+    const [or,ma,se]=await Promise.all([
+      client.from('dachwerk_orders').select('id,order_number,data,created_by,updated_at').order('updated_at',{ascending:false}),
+      client.from('dachwerk_materials').select('*').order('material'),
+      client.from('dachwerk_setup_items').select('*').order('bezeichnung')
+    ]);
+    for(const r of [or,ma,se])if(r.error)throw r.error;
+    const zip=new JSZip();
+    const backupOrders=[];
+    for(const row of (or.data||[])){
+      const data={...(row.data||{}),id:row.id,auftragsnr:row.order_number||row.data?.auftragsnr||''};
+      data.photos=[];
+      for(let i=0;i<(row.data?.photos||[]).length;i++){
+        const photo={...(row.data.photos[i])};
+        if(photo.path){
+          const {data:urlData,error:urlError}=await client.storage.from('dachwerk-photos').createSignedUrl(photo.path,300);
+          if(!urlError&&urlData?.signedUrl){
+            try{const response=await fetch(urlData.signedUrl);if(response.ok){const blob=await response.blob();const ext=(blob.type||'image/jpeg').includes('png')?'png':'jpg';const fileName=`fotos/${row.id}/${String(i+1).padStart(2,'0')}-${(photo.name||'foto').replace(/[^a-z0-9._-]/gi,'_')}.${ext}`;zip.file(fileName,blob);photo.backupFile=fileName;}}
+            catch(photoErr){console.warn('Foto konnte nicht ins Backup aufgenommen werden',photo.path,photoErr);}
+          }
+        } else if(photo.src&&photo.src.startsWith('data:image/')){
+          const match=photo.src.match(/^data:image\/(png|jpeg|jpg);base64,(.+)$/);
+          if(match){const ext=match[1]==='png'?'png':'jpg';const fileName=`fotos/${row.id}/${String(i+1).padStart(2,'0')}-${(photo.name||'foto').replace(/[^a-z0-9._-]/gi,'_')}.${ext}`;zip.file(fileName,match[2],{base64:true});photo.backupFile=fileName;}
+        }
+        delete photo.src;data.photos.push(photo);
+      }
+      backupOrders.push({id:row.id,order_number:row.order_number,created_by:row.created_by,updated_at:row.updated_at,data});
+    }
+    const manifest={format:'DACHWERK_BACKUP',version:1,createdAt:new Date().toISOString(),note:'JSON enthält Aufträge inklusive Unterschriften und Auftragsdaten. Fotos sind im Ordner fotos/ enthalten, sofern sie heruntergeladen werden konnten.',orders:backupOrders,materials:ma.data||[],setupItems:se.data||[]};
+    zip.file('dachwerk-backup.json',JSON.stringify(manifest,null,2));
+    zip.file('README.txt','DACHWERK Backup\n\nEnthält Aufträge, Unterschriften, Materialliste, Baustelleneinrichtung und herunterladbare Fotos.\nBewahre diese Datei sicher auf: Sie kann Kundendaten und Unterschriften enthalten.\nDieses Backup ist eine Datensicherung zur Aufbewahrung; ein automatischer Wiederherstellungsimport ist in dieser Funktion noch nicht enthalten.\n');
+    const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:5}});
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`DACHWERK_Backup_${new Date().toISOString().slice(0,10)}.zip`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+    alert(`Backup erstellt. ${backupOrders.length} Aufträge, ${ma.data?.length||0} Materialien und ${se.data?.length||0} Baustelleneinrichtungen wurden exportiert. Bitte die ZIP-Datei sicher auf deinem Computer speichern.`);
+  }catch(e){console.error('DACHWERK Backup fehlgeschlagen',e);alert('Backup fehlgeschlagen: '+(e?.message||'Unbekannter Fehler'));}
+  finally{if(button){button.disabled=false;button.textContent='Backup erstellen'}}
+}
+
 window.addEventListener('load',()=>{canvasSetup('sigKunde');canvasSetup('sigFirma');resetForm();renderOrders();renderOffice();renderMasters();updateStorage()});
