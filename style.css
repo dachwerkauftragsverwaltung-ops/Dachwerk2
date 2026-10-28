@@ -686,3 +686,10 @@ body:not(.authenticated)>header,body:not(.authenticated)>.appnav,body:not(.authe
 
 /* Tagesplan responsive visibility controls */
 .tagesplan-filterbar{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:10px 0 14px}.tagesplan-filterbar label{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:13px;min-width:min(100%,320px)}.tagesplan-filterbar input{min-height:42px;border:1px solid #d5ddd8;border-radius:9px;padding:8px}.tagesplan-visible{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;white-space:nowrap}.tagesplan-visible input{width:18px;height:18px}.tagesplan-stop .stop-info{overflow-wrap:anywhere}.tagesplan-stop-actions button{white-space:normal}@media(max-width:700px){.tagesplan-stop{align-items:flex-start;flex-wrap:wrap}.tagesplan-visible{min-width:62px;padding-top:4px}.tagesplan-stop .stop-info{flex:1 1 calc(100% - 80px)}.tagesplan-stop-actions{width:100%;padding-left:68px}.tagesplan-stop-actions button{width:100%}}
+
+/* Montage-Fälligkeit in der Auftragsübersicht */
+.order-due{font-weight:700;margin:6px 0 8px;padding:5px 9px;border-left:3px solid currentColor;border-radius:4px;background:rgba(127,127,127,.08);font-size:.92rem}
+.order-due-overdue{color:#dc2626;background:rgba(220,38,38,.09);border-left-color:#dc2626}
+.order-due-today{color:#b45309;background:rgba(245,158,11,.12);border-left-color:#b45309}
+.order-due-soon{color:#15803d;background:rgba(22,163,74,.08);border-left-color:#15803d}
+.order-due-done{color:#64748b;background:rgba(100,116,139,.08)}
