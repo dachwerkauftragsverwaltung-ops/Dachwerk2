@@ -207,10 +207,15 @@ async function createAndSendPDF(){
 
     // Render the original report sheet plus every photo sheet to A4 JPEG pages.
     // The PDF is rebuilt at progressively lower quality until it is <= 2 MB.
-    const pages=[sheet,...Array.from(pp.querySelectorAll('.pdf-photo-page'))];
+    // Keep the photo pages OUTSIDE the report sheet. Otherwise html2canvas
+    // captures the nested photo header at the bottom of page 1 as well.
+    const photoPagesParent=pp.parentNode, photoPagesNext=pp.nextSibling;
+    t.appendChild(pp);
+    const photoPages=Array.from(pp.querySelectorAll('.pdf-photo-page'));
+    const pages=[sheet,...photoPages];
     const original={display:t.style.display,position:t.style.position,left:t.style.left,top:t.style.top,width:t.style.width,zIndex:t.style.zIndex,background:t.style.background};
     const parent=t.parentNode,next=t.nextSibling;
-    pdfRestore=()=>{Object.assign(t.style,original);t.setAttribute('aria-hidden','true');pages.forEach(el=>{['display','boxSizing','width','minWidth','maxWidth','height','minHeight','maxHeight','margin','overflow','background'].forEach(k=>el.style[k]='')});if(parent&&t.parentNode!==parent){if(next&&next.parentNode===parent)parent.insertBefore(t,next);else parent.appendChild(t)}};
+    pdfRestore=()=>{if(photoPagesParent){if(photoPagesNext&&photoPagesNext.parentNode===photoPagesParent)photoPagesParent.insertBefore(pp,photoPagesNext);else photoPagesParent.appendChild(pp)}Object.assign(t.style,original);t.setAttribute('aria-hidden','true');pages.forEach(el=>{['display','boxSizing','width','minWidth','maxWidth','height','minHeight','maxHeight','margin','overflow','background'].forEach(k=>el.style[k]='')});if(parent&&t.parentNode!==parent){if(next&&next.parentNode===parent)parent.insertBefore(t,next);else parent.appendChild(t)}};
     Object.assign(t.style,{display:'block',position:'fixed',left:'0',top:'0',width:'794px',zIndex:'999999',background:'#fff'});
     t.setAttribute('aria-hidden','false');
     pages.forEach(el=>{Object.assign(el.style,{display:'block',boxSizing:'border-box',width:'794px',minWidth:'794px',maxWidth:'794px',height:'1123px',minHeight:'1123px',maxHeight:'1123px',margin:'0',overflow:'hidden',background:'#fff'});});
