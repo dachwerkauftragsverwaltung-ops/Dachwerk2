@@ -33,7 +33,7 @@ function updateEmployeeSummary(){
 function addEmployeeRow(d={}){
   let r=document.createElement('div');
   r.className='employee-row';
-  r.innerHTML='<input type="date" class="workdate" aria-label="Arbeitstag" title="Arbeitstag"><input placeholder="Mitarbeiter" class="ename" aria-label="Mitarbeiter"><input type="time" class="beg" aria-label="Beginn"><input type="time" class="end" aria-label="Ende"><input type="number" min="0" class="pause" placeholder="0" aria-label="Pause in Minuten"><input class="hours" readonly aria-label="Arbeitsstunden"><button type="button" aria-label="Mitarbeiter entfernen">×</button>';
+  r.innerHTML='<label class="emp-field emp-date"><span>Arbeitstag</span><input type="date" class="workdate" aria-label="Arbeitstag" title="Arbeitstag"></label><label class="emp-field emp-name"><span>Mitarbeiter</span><input placeholder="Name" class="ename" aria-label="Mitarbeiter"></label><label class="emp-field"><span>Beginn</span><input type="time" class="beg" aria-label="Beginn"></label><label class="emp-field"><span>Ende</span><input type="time" class="end" aria-label="Ende"></label><label class="emp-field"><span>Pause (Min.)</span><input type="number" min="0" class="pause" placeholder="0" aria-label="Pause in Minuten"></label><label class="emp-field"><span>Arbeitsstunden</span><input class="hours" readonly aria-label="Arbeitsstunden"></label><button type="button" aria-label="Mitarbeiter entfernen">×</button>';
   r.querySelector('.workdate').value=d.date||d.datum||$('datum').value||new Date().toISOString().slice(0,10);
   r.querySelector('.ename').value=d.name||'';
   r.querySelector('.beg').value=d.beg||'';
