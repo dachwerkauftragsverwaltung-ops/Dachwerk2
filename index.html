@@ -19,7 +19,7 @@
       <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
       <div class="login-features"><div><b>☷</b><span>Aufträge verwalten</span></div><div><b>◎</b><span>Baustellenfotos</span></div><div><b>▤</b><span>Serviceberichte</span></div><div><b>⚙</b><span>Material &amp; Stammdaten</span></div></div>
     </section>
-    <div class="login-hero"><img src="login-roofer.png" alt="DACHWERK Dachdecker in schwarz-grüner Arbeitskleidung auf einem Ziegeldach"><div class="hero-caption"><b>DACHWERK · WE FIX IT</b><span>Alle Aufträge. Ein Team. Ein Überblick.</span></div></div>
+    <div class="login-hero"><div id="loginCharacter" class="login-character" aria-label="DACHWERK 3D-Charakter"><img class="login-character-fallback" src="login-roofer.png" alt="DACHWERK Dachdecker"></div><div class="hero-caption"><b>DACHWERK · WE FIX IT</b><span>Alle Aufträge. Ein Team. Ein Überblick.</span></div></div>
   </div>
   <div id="loginBurst" class="login-burst" aria-hidden="true"><div class="burst-rays"></div><div class="burst-check">✓</div><strong>Anmeldung erfolgreich!</strong><span>Schön, dass du da bist!</span></div>
 </div><div id="appShell" hidden>
@@ -112,4 +112,4 @@
     <div class="consumption-actions"><button type="button" class="voice-button" onclick="voiceConsumption()">🎙️ Spracheingabe</button><span></span><button type="button" onclick="closeConsumptionEditor(false)">Abbrechen</button><button type="button" class="primary" onclick="closeConsumptionEditor(true)">Übernehmen</button></div>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script><script src="auth.js"></script></div></body></html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script><script src="auth.js"></script><script type="module" src="login-3d.js"></script></div></body></html>

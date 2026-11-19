@@ -776,3 +776,14 @@ body:not(.authenticated)>header,body:not(.authenticated)>.appnav,body:not(.authe
 #pdfTemplate .pdf-travel-table tfoot td:last-child {
   text-align: right;
 }
+
+/* DACHWERK 3D login character: head-only motion, no full-body movement */
+#loginScreen .login-character{position:absolute;inset:0;overflow:hidden;display:block;background:radial-gradient(ellipse at 54% 42%,#dce5dd 0%,#cbd5cc 48%,#aebbb1 100%)}
+#loginScreen .login-character canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1}
+#loginScreen .login-character-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:53% center;z-index:0}
+#loginScreen .login-character.is-ready .login-character-fallback{opacity:0}
+#loginScreen .login-character.is-fallback canvas{display:none}
+#loginScreen .login-hero:after{z-index:2}
+#loginScreen .hero-caption{z-index:3}
+@media(max-width:800px){#loginScreen .login-character{background:radial-gradient(ellipse at 52% 35%,#dce5dd 0%,#cbd5cc 58%,#aebbb1 100%)}#loginScreen .login-character canvas{object-position:center top}}
+@media(prefers-reduced-motion:reduce){#loginScreen .login-character canvas{animation:none}}

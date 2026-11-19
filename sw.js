@@ -1,5 +1,5 @@
-const CACHE='dachwerk-20261119-sum-align-v3';
-const ASSETS=['./','./index.html','./style.css','./app.js','./manifest.webmanifest','./icon-192.png','./icon-512.png','./dachwerk-20261119-sum-align-v3'];
+const CACHE='dachwerk-20261119-head-login-v4';
+const ASSETS=['./','./index.html','./style.css','./app.js','./auth.js','./login-3d.js','./Rigged-rigged.glb','./manifest.webmanifest','./icon-192.png','./icon-512.png','./dachwerk-20261119-head-login-v4'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
