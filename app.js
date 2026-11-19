@@ -206,14 +206,35 @@ async function createAndSendPDF(){
       img.addEventListener('error',()=>{clearTimeout(timer);reject(new Error('Ein Foto oder Logo konnte nicht geladen werden. Bitte Auftrag/Fotos prüfen.'))},{once:true});
     })));
 
-    // Render the original report sheet plus every photo sheet to A4 JPEG pages.
-    // The PDF is rebuilt at progressively lower quality until it is <= 2 MB.
+    // Split long reports cleanly: keep the first page readable and move
+    // the complete setup/material blocks plus customer confirmation to a
+    // dedicated continuation page when the content becomes extensive.
+    const reportPages=[sheet];
+    const totalDetailRows=(d.materials||[]).length+(d.setup||[]).length;
+    const needsContinuation=totalDetailRows>=8 || String(d.arbeiten||'').length>650 || (d.employees||[]).length>=9 || (d.fahrtkosten||[]).length>=7;
+    if(needsContinuation){
+      const continuation=sheet.cloneNode(true);
+      continuation.classList.add('pdf-continuation');
+      continuation.querySelector('.pdf-title').innerHTML='DACHWERK<br><span>SERVICEBERICHT / FORTSETZUNG</span>';
+      continuation.querySelector('.pdf-info').remove();
+      continuation.querySelectorAll('.pdf-section').forEach(sec=>{
+        if(!sec.querySelector('.pdf-setup-table,.pdf-material-table,.pdf-confirm')) sec.remove();
+      });
+      continuation.querySelector('.pdf-footer').insertAdjacentHTML('beforebegin','<div class="pdf-continuation-label">Fortsetzung · Auftragsnummer '+escPdf(d.auftragsnr||'')+'</div>');
+      sheet.querySelector('.pdf-section:has(.pdf-setup-table)')?.remove();
+      sheet.querySelector('.pdf-section:has(.pdf-material-table)')?.remove();
+      sheet.querySelector('.pdf-confirm')?.remove();
+      reportPages.push(continuation);
+    }
+
+    // Render report page(s) followed by photo pages. The PDF is rebuilt
+    // at progressively lower quality until it is <= 2 MB.
     // Keep the photo pages OUTSIDE the report sheet. Otherwise html2canvas
     // captures the nested photo header at the bottom of page 1 as well.
     const photoPagesParent=pp.parentNode, photoPagesNext=pp.nextSibling;
     t.appendChild(pp);
     const photoPages=Array.from(pp.querySelectorAll('.pdf-photo-page'));
-    const pages=[sheet,...photoPages];
+    const pages=[...reportPages,...photoPages];
     const original={display:t.style.display,position:t.style.position,left:t.style.left,top:t.style.top,width:t.style.width,zIndex:t.style.zIndex,background:t.style.background};
     const parent=t.parentNode,next=t.nextSibling;
     pdfRestore=()=>{if(photoPagesParent){if(photoPagesNext&&photoPagesNext.parentNode===photoPagesParent)photoPagesParent.insertBefore(pp,photoPagesNext);else photoPagesParent.appendChild(pp)}Object.assign(t.style,original);t.setAttribute('aria-hidden','true');pages.forEach(el=>{['display','boxSizing','width','minWidth','maxWidth','height','minHeight','maxHeight','margin','overflow','background'].forEach(k=>el.style[k]='')});if(parent&&t.parentNode!==parent){if(next&&next.parentNode===parent)parent.insertBefore(t,next);else parent.appendChild(t)}};
