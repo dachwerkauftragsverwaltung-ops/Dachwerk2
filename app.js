@@ -219,7 +219,7 @@ async function createAndSendPDF(){
     pdfRestore=()=>{if(photoPagesParent){if(photoPagesNext&&photoPagesNext.parentNode===photoPagesParent)photoPagesParent.insertBefore(pp,photoPagesNext);else photoPagesParent.appendChild(pp)}Object.assign(t.style,original);t.setAttribute('aria-hidden','true');pages.forEach(el=>{['display','boxSizing','width','minWidth','maxWidth','height','minHeight','maxHeight','margin','overflow','background'].forEach(k=>el.style[k]='')});if(parent&&t.parentNode!==parent){if(next&&next.parentNode===parent)parent.insertBefore(t,next);else parent.appendChild(t)}};
     Object.assign(t.style,{display:'block',position:'fixed',left:'0',top:'0',width:'794px',zIndex:'999999',background:'#fff'});
     t.setAttribute('aria-hidden','false');
-    pages.forEach(el=>{Object.assign(el.style,{display:'block',boxSizing:'border-box',width:'794px',minWidth:'794px',maxWidth:'794px',height:'1123px',minHeight:'1123px',maxHeight:'1123px',margin:'0',overflow:'hidden',background:'#fff'});});
+    pages.forEach(el=>{Object.assign(el.style,{display:'block',boxSizing:'border-box',width:'734px',minWidth:'734px',maxWidth:'734px',height:'1123px',minHeight:'1123px',maxHeight:'1123px',margin:'0 auto',overflow:'hidden',background:'#fff'});});
     await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
     const {jsPDF}=window.jspdf;
     const limit=2*1024*1024;
@@ -231,10 +231,10 @@ async function createAndSendPDF(){
       const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true,putOnlyUsedFonts:true});
       for(let i=0;i<pages.length;i++){
         setButton('Seite '+(i+1)+'/'+pages.length+' wird verarbeitet …');
-        const canvas=await window.html2canvas(pages[i],{scale:cfg.scale,backgroundColor:'#ffffff',useCORS:true,allowTaint:false,logging:false,width:794,height:1123,windowWidth:794,windowHeight:1123,scrollX:0,scrollY:0});
+        const canvas=await window.html2canvas(pages[i],{scale:cfg.scale,backgroundColor:'#ffffff',useCORS:true,allowTaint:false,logging:false,width:734,height:1123,windowWidth:794,windowHeight:1123,scrollX:0,scrollY:0});
         const data=canvas.toDataURL('image/jpeg',cfg.q);
         if(i>0)pdf.addPage('a4','portrait');
-        pdf.addImage(data,'JPEG',0,0,210,297,undefined,'FAST');
+        pdf.addImage(data,'JPEG',8,0,194,297,undefined,'FAST');
         canvas.width=1;canvas.height=1;
       }
       finalBlob=pdf.output('blob'); finalQuality=cfg.q; finalScale=cfg.scale;
@@ -247,7 +247,10 @@ async function createAndSendPDF(){
       alert('Die PDF konnte trotz maximaler Komprimierung nicht auf 2 MB reduziert werden ('+mb+' MB). Bitte die Anzahl der Fotos reduzieren oder die Fotos einzeln versenden.');
       return;
     }
-    const fileName=(d.auftragsnr||'DACHWERK')+'_Servicebericht.pdf';
+    const safePart=value=>String(value||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_-]+/gi,'_').replace(/^_+|_+$/g,'').slice(0,60);
+    const customerPart=safePart(d.kunde)||'Kunde';
+    const orderPart=safePart(d.auftragsnr)||'Ohne_Auftragsnummer';
+    const fileName=customerPart+'_'+orderPart+'_Servicebericht.pdf';
     const file=new File([finalBlob],fileName,{type:'application/pdf'});
     const sizeMB=(finalBlob.size/1024/1024).toFixed(2);
     if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
