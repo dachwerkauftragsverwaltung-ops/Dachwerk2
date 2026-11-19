@@ -258,8 +258,14 @@ async function createAndSendPDF(){
     console.info('DACHWERK PDF erstellt:',{size:finalBlob.size,quality:finalQuality,scale:finalScale,pages:pages.length});
   }catch(err){
     if(pdfRestore){try{pdfRestore()}catch(restoreErr){console.warn('PDF-Ansicht konnte nicht vollständig zurückgesetzt werden',restoreErr)}}
-    console.error('PDF-Erstellung fehlgeschlagen',err);
-    alert('PDF konnte nicht erstellt werden: '+(err?.message||'Unbekannter Fehler')+'\nBitte erneut versuchen.');
+    // iOS Safari rejects navigator.share() with AbortError when the user closes
+    // the share sheet. The PDF was already created; this is not a PDF failure.
+    if(err?.name==='AbortError'){
+      console.info('DACHWERK: Teilen vom Benutzer abgebrochen; PDF wurde erstellt, aber nicht geteilt.');
+    }else{
+      console.error('PDF-Erstellung fehlgeschlagen',err);
+      alert('PDF konnte nicht erstellt werden: '+(err?.message||'Unbekannter Fehler')+'\nBitte erneut versuchen.');
+    }
   }finally{setButton('PDF erstellen und senden',false)}
 }
 
