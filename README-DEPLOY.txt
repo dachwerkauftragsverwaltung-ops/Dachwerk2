@@ -16,3 +16,12 @@ Enthalten:
 - Bestehende App-, Supabase-, PDF- und Fotospeicher-Dateien aus der bereitgestellten Ausgangsversion
 
 Hinweis: Diese ZIP aktualisiert die Login-Oberfläche. Sie verändert keine Supabase-RLS-Regeln und kann die Funktion auf echten Geräten nicht ersetzen/testen, ohne sie auf GitHub Pages aufzurufen.
+
+
+PDF-Update 2026-11-19:
+- PDF wird nicht mehr über den Druckdialog erzeugt, sondern als echte PDF-Datei erstellt.
+- Alle PDF-Seiten inklusive Fotoseiten werden als JPEG-Seiten eingebettet und stufenweise komprimiert.
+- Harte Obergrenze: 2 MiB. Wenn sie nach allen Komprimierungsstufen überschritten wird, wird die Datei nicht freigegeben.
+- Vier Baustellenfotos pro Fotoseite bleiben erhalten; die Fotos werden nicht auf 6 oder 7 begrenzt.
+- Benötigt html2canvas und jsPDF über jsDelivr-CDN; beim ersten PDF-Erstellen ist eine Internetverbindung erforderlich.
+- Nach dem GitHub-Upload erzwingt der neue Service-Worker-Cache die Aktualisierung der App-Dateien.

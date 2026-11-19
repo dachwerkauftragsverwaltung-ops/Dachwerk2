@@ -146,82 +146,116 @@ function sigData(id){let c=$(id);if(!c)return '';if(c.__signatureSource&&!c.__si
 function pdfRows(items, names){
   return items.length ? items.map(x=>'<tr>'+names.map(n=>'<td>'+escPdf(x[n]||'')+'</td>').join('')+'</tr>').join('') : '<tr><td colspan="'+names.length+'" class="pdf-empty">Keine Positionen eingetragen.</td></tr>';
 }
-function createAndSendPDF(){
-  let d=collect(), t=$('pdfTemplate');
-  const sheet=t.querySelector('.pdf-sheet');
-  const materialCount=(d.materials||[]).length, setupCount=(d.setup||[]).length;
-  const employeeCount=(d.employees||[]).length, travelCount=(d.fahrtkosten||[]).length;
-  const contentLength=String(d.arbeiten||'').length;
-  sheet.classList.remove('pdf-dense','pdf-very-dense');
-  if(materialCount+setupCount>=14 || contentLength>700 || employeeCount+travelCount+materialCount+setupCount>=25) sheet.classList.add('pdf-very-dense');
-  else if(materialCount+setupCount>=8 || contentLength>350 || employeeCount+travelCount+materialCount+setupCount>=16) sheet.classList.add('pdf-dense');
-  t.querySelector('[data-p="auftragsnr"]').textContent=d.auftragsnr||'';
-  t.querySelector('[data-p="angebotsnr"]').textContent=d.angebotsnr||'';
-  t.querySelector('[data-p="kunde"]').textContent=d.kunde||'';
-  t.querySelector('[data-p="datum"]').textContent=fmtDate(d.datum);
-  t.querySelector('[data-p="kontakt"]').textContent=d.kontakt||'';
-  t.querySelector('[data-p="objekt"]').textContent=d.objekt||'';
-  t.querySelector('[data-p="arbeiten"]').innerHTML=escPdf(d.arbeiten||'').replace(/\n/g,'<br>');
-  let erows=d.employees||[];
-  $('pdfEmployees').innerHTML=pdfRows(erows,['name','beg','end','pause','hours']);
-  $('pdfEmployeeSum').textContent=erows.reduce((a,x)=>a+(parseFloat(String(x.hours||'0').replace(',','.'))||0),0).toFixed(2).replace('.',',')+' h';
-  const travelRows=d.fahrtkosten||((d.fahrt?.kosten||d.fahrt?.km||d.fahrt?.hinweis)?[{datum:d.datum||'',betrag:d.fahrt?.kosten||'49.00'}]:[]);
-  $('pdfFahrtRows').innerHTML=travelRows.length?travelRows.map(x=>'<tr><td>'+escPdf(fmtDate(x.datum))+'</td><td>'+escPdf(x.betrag!==''&&x.betrag!=null?Number(x.betrag).toFixed(2).replace('.',',')+' €':'')+'</td></tr>').join(''):'<tr><td colspan="2" class="pdf-empty">Keine Fahrtkosten eingetragen.</td></tr>';
-  $('pdfFahrtSum').textContent=travelRows.reduce((a,x)=>a+(parseFloat(String(x.betrag||'0').replace(',','.'))||0),0).toFixed(2).replace('.',',')+' €';
-  $('pdfSetup').innerHTML=pdfRows((d.setup||[]).map(x=>{let m=setups.find(z=>z.id===x.id);return {name:m?.name||(x.qty?'Freitext':''),qty:x.qty,unit:x.unit}}),['name','qty','unit']);
-  $('pdfMaterial').innerHTML=pdfRows((d.materials||[]).map(x=>{let m=materials.find(z=>z.id===x.id);return {name:m?.name||(x.qty?'Freitext':''),qty:x.qty,unit:x.unit}}),['name','qty','unit']);
-  $('pdfOrt').textContent=$('signOrt').value||'';
-  $('pdfDatum2').textContent=fmtDate($('signDatum').value||d.datum);
-  $('pdfSigKunde').src=sigData('sigKunde')||'';
-  $('pdfSigFirma').src=sigData('sigFirma')||'';
-  const pp=$('pdfPhotoPages');
-  pp.innerHTML='';
-  const pdfPhotos=d.photos||[];
-  for(let start=0;start<pdfPhotos.length;start+=4){
-    const page=document.createElement('div');
-    page.className='pdf-photo-page';
-    const pageNo=Math.floor(start/4)+1, pageCount=Math.ceil(pdfPhotos.length/4);
-    page.innerHTML='<div class="pdf-photo-head"><img src="dachwerk-logo.jpg"><div><b>DACHWERK – BAUSTELLENFOTOS</b><br>Auftragsnummer: '+escPdf(d.auftragsnr||'')+'</div><div class="pdf-photo-count">Seite '+pageNo+' / '+pageCount+'</div></div><div class="pdf-photo-grid"></div>';
-    const grid=page.querySelector('.pdf-photo-grid');
-    pdfPhotos.slice(start,start+4).forEach((p,offset)=>{
-      const item=document.createElement('div'); item.className='pdf-photo-item';
-      const img=document.createElement('img'); img.src=p.src; img.alt='';
-      const cap=document.createElement('div'); cap.className='pdf-photo-caption'; cap.textContent='Foto '+(start+offset+1)+' · '+(p.name||'Baustellenfoto');
-      item.append(img,cap); grid.appendChild(item);
-    });
-    pp.appendChild(page);
+async function createAndSendPDF(){
+  const button=document.querySelector('[onclick="createAndSendPDF()"]');
+  const setButton=(txt,disabled=true)=>{if(button){button.textContent=txt;button.disabled=disabled}};
+  if(typeof window.html2canvas!=='function'||!window.jspdf?.jsPDF){
+    alert('Die PDF-Komponenten konnten nicht geladen werden. Bitte Internetverbindung prüfen und erneut versuchen.');return;
   }
-  // Wichtig für iOS Safari: Das PDF-Template liegt in der normalen App-Hülle.
-  // Die Druck-CSS blendet diese Hülle aus. Deshalb das Template vorübergehend
-  // direkt unter body verschieben, damit es beim Drucken nicht mit ausgeblendet wird.
-  const originalParent=t.parentNode;
-  const originalNext=t.nextSibling;
-  document.body.appendChild(t);
-  t.classList.add('printing');
-  t.setAttribute('aria-hidden','false');
-  const imgs=Array.from(t.querySelectorAll('img')).filter(img=>img.src);
-  const waitForImage=img=>new Promise(resolve=>{
-    if(img.complete && img.naturalWidth>0) return resolve();
-    const done=()=>resolve();
-    img.addEventListener('load',done,{once:true});
-    img.addEventListener('error',done,{once:true});
-    setTimeout(done,2500);
-  });
-  Promise.all(imgs.map(waitForImage)).then(()=>{
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      void t.offsetHeight;
-      window.print();
-    }));
-  });
-  const restorePdfTemplate=()=>{
-    t.classList.remove('printing');
-    t.setAttribute('aria-hidden','true');
-    if(originalParent && t.parentNode===document.body){
-      if(originalNext && originalNext.parentNode===originalParent) originalParent.insertBefore(t,originalNext);
-      else originalParent.appendChild(t);
+  setButton('PDF wird vorbereitet …');
+  let d=collect(), t=$('pdfTemplate');
+  let pdfRestore=null;
+  try{
+    const sheet=t.querySelector('.pdf-sheet');
+    const materialCount=(d.materials||[]).length, setupCount=(d.setup||[]).length;
+    const employeeCount=(d.employees||[]).length, travelCount=(d.fahrtkosten||[]).length;
+    const contentLength=String(d.arbeiten||'').length;
+    sheet.classList.remove('pdf-dense','pdf-very-dense');
+    if(materialCount+setupCount>=14 || contentLength>700 || employeeCount+travelCount+materialCount+setupCount>=25) sheet.classList.add('pdf-very-dense');
+    else if(materialCount+setupCount>=8 || contentLength>350 || employeeCount+travelCount+materialCount+setupCount>=16) sheet.classList.add('pdf-dense');
+    t.querySelector('[data-p="auftragsnr"]').textContent=d.auftragsnr||'';
+    t.querySelector('[data-p="angebotsnr"]').textContent=d.angebotsnr||'';
+    t.querySelector('[data-p="kunde"]').textContent=d.kunde||'';
+    t.querySelector('[data-p="datum"]').textContent=fmtDate(d.datum);
+    t.querySelector('[data-p="kontakt"]').textContent=d.kontakt||'';
+    t.querySelector('[data-p="objekt"]').textContent=d.objekt||'';
+    t.querySelector('[data-p="arbeiten"]').innerHTML=escPdf(d.arbeiten||'').replace(/\n/g,'<br>');
+    const erows=d.employees||[];
+    $('pdfEmployees').innerHTML=pdfRows(erows,['name','beg','end','pause','hours']);
+    $('pdfEmployeeSum').textContent=erows.reduce((a,x)=>a+(parseFloat(String(x.hours||'0').replace(',','.'))||0),0).toFixed(2).replace('.',',')+' h';
+    const travelRows=d.fahrtkosten||((d.fahrt?.kosten||d.fahrt?.km||d.fahrt?.hinweis)?[{datum:d.datum||'',betrag:d.fahrt?.kosten||'49.00'}]:[]);
+    $('pdfFahrtRows').innerHTML=travelRows.length?travelRows.map(x=>'<tr><td>'+escPdf(fmtDate(x.datum))+'</td><td>'+escPdf(x.betrag!==''&&x.betrag!=null?Number(x.betrag).toFixed(2).replace('.',',')+' €':'')+'</td></tr>').join(''):'<tr><td colspan="2" class="pdf-empty">Keine Fahrtkosten eingetragen.</td></tr>';
+    $('pdfFahrtSum').textContent=travelRows.reduce((a,x)=>a+(parseFloat(String(x.betrag||'0').replace(',','.'))||0),0).toFixed(2).replace('.',',')+' €';
+    $('pdfSetup').innerHTML=pdfRows((d.setup||[]).map(x=>{let m=setups.find(z=>z.id===x.id);return {name:m?.name||(x.qty?'Freitext':''),qty:x.qty,unit:x.unit}}),['name','qty','unit']);
+    $('pdfMaterial').innerHTML=pdfRows((d.materials||[]).map(x=>{let m=materials.find(z=>z.id===x.id);return {name:m?.name||(x.qty?'Freitext':''),qty:x.qty,unit:x.unit}}),['name','qty','unit']);
+    $('pdfOrt').textContent=$('signOrt').value||'';
+    $('pdfDatum2').textContent=fmtDate($('signDatum').value||d.datum);
+    $('pdfSigKunde').src=sigData('sigKunde')||'';
+    $('pdfSigFirma').src=sigData('sigFirma')||'';
+    const pp=$('pdfPhotoPages'); pp.innerHTML='';
+    const pdfPhotos=d.photos||[];
+    for(let start=0;start<pdfPhotos.length;start+=4){
+      const page=document.createElement('div'); page.className='pdf-photo-page';
+      const pageNo=Math.floor(start/4)+1, pageCount=Math.ceil(pdfPhotos.length/4);
+      page.innerHTML='<div class="pdf-photo-head"><img src="dachwerk-logo.jpg"><div><b>DACHWERK – BAUSTELLENFOTOS</b><br>Auftragsnummer: '+escPdf(d.auftragsnr||'')+'</div><div class="pdf-photo-count">Seite '+pageNo+' / '+pageCount+'</div></div><div class="pdf-photo-grid"></div>';
+      const grid=page.querySelector('.pdf-photo-grid');
+      pdfPhotos.slice(start,start+4).forEach((ph,offset)=>{
+        const item=document.createElement('div'); item.className='pdf-photo-item';
+        const img=document.createElement('img'); img.src=ph.src; img.alt='';
+        const cap=document.createElement('div'); cap.className='pdf-photo-caption'; cap.textContent='Foto '+(start+offset+1)+' · '+(ph.name||'Baustellenfoto');
+        item.append(img,cap); grid.appendChild(item);
+      }); pp.appendChild(page);
     }
-  };
-  window.addEventListener('afterprint',restorePdfTemplate,{once:true});
+    // Ensure every logo, signature and photo is decoded before rendering. A broken photo is reported instead of silently omitted.
+    const allImages=Array.from(t.querySelectorAll('img')).filter(img=>img.getAttribute('src'));
+    await Promise.all(allImages.map(img=>new Promise((resolve,reject)=>{
+      if(img.complete&&img.naturalWidth>0)return resolve();
+      const timer=setTimeout(()=>reject(new Error('Ein Bild konnte nicht rechtzeitig geladen werden: '+(img.alt||img.src.split('/').pop()))),15000);
+      img.addEventListener('load',()=>{clearTimeout(timer);resolve()},{once:true});
+      img.addEventListener('error',()=>{clearTimeout(timer);reject(new Error('Ein Foto oder Logo konnte nicht geladen werden. Bitte Auftrag/Fotos prüfen.'))},{once:true});
+    })));
+
+    // Render the original report sheet plus every photo sheet to A4 JPEG pages.
+    // The PDF is rebuilt at progressively lower quality until it is <= 2 MB.
+    const pages=[sheet,...Array.from(pp.querySelectorAll('.pdf-photo-page'))];
+    const original={display:t.style.display,position:t.style.position,left:t.style.left,top:t.style.top,width:t.style.width,zIndex:t.style.zIndex,background:t.style.background};
+    const parent=t.parentNode,next=t.nextSibling;
+    pdfRestore=()=>{Object.assign(t.style,original);t.setAttribute('aria-hidden','true');pages.forEach(el=>{['display','boxSizing','width','minWidth','maxWidth','height','minHeight','maxHeight','margin','overflow','background'].forEach(k=>el.style[k]='')});if(parent&&t.parentNode!==parent){if(next&&next.parentNode===parent)parent.insertBefore(t,next);else parent.appendChild(t)}};
+    Object.assign(t.style,{display:'block',position:'fixed',left:'0',top:'0',width:'794px',zIndex:'999999',background:'#fff'});
+    t.setAttribute('aria-hidden','false');
+    pages.forEach(el=>{Object.assign(el.style,{display:'block',boxSizing:'border-box',width:'794px',minWidth:'794px',maxWidth:'794px',height:'1123px',minHeight:'1123px',maxHeight:'1123px',margin:'0',overflow:'hidden',background:'#fff'});});
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+    const {jsPDF}=window.jspdf;
+    const limit=2*1024*1024;
+    let finalBlob=null, finalQuality=0, finalScale=0;
+    const attempts=[{scale:1.35,q:.76},{scale:1.2,q:.68},{scale:1.05,q:.60},{scale:.92,q:.52},{scale:.82,q:.44},{scale:.72,q:.36}];
+    for(let a=0;a<attempts.length;a++){
+      const cfg=attempts[a];
+      setButton('PDF komprimieren … '+(a+1)+'/'+attempts.length);
+      const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true,putOnlyUsedFonts:true});
+      for(let i=0;i<pages.length;i++){
+        setButton('Seite '+(i+1)+'/'+pages.length+' wird verarbeitet …');
+        const canvas=await window.html2canvas(pages[i],{scale:cfg.scale,backgroundColor:'#ffffff',useCORS:true,allowTaint:false,logging:false,width:794,height:1123,windowWidth:794,windowHeight:1123,scrollX:0,scrollY:0});
+        const data=canvas.toDataURL('image/jpeg',cfg.q);
+        if(i>0)pdf.addPage('a4','portrait');
+        pdf.addImage(data,'JPEG',0,0,210,297,undefined,'FAST');
+        canvas.width=1;canvas.height=1;
+      }
+      finalBlob=pdf.output('blob'); finalQuality=cfg.q; finalScale=cfg.scale;
+      if(finalBlob.size<=limit)break;
+    }
+    // Restore app DOM before sharing/downloading.
+    pdfRestore(); pdfRestore=null;
+    if(!finalBlob||finalBlob.size>limit){
+      const mb=(finalBlob?.size/1024/1024||0).toFixed(2);
+      alert('Die PDF konnte trotz maximaler Komprimierung nicht auf 2 MB reduziert werden ('+mb+' MB). Bitte die Anzahl der Fotos reduzieren oder die Fotos einzeln versenden.');
+      return;
+    }
+    const fileName=(d.auftragsnr||'DACHWERK')+'_Servicebericht.pdf';
+    const file=new File([finalBlob],fileName,{type:'application/pdf'});
+    const sizeMB=(finalBlob.size/1024/1024).toFixed(2);
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],title:'DACHWERK Servicebericht',text:'Servicebericht '+(d.auftragsnr||'')+' · '+sizeMB+' MB'});
+    }else{
+      const url=URL.createObjectURL(finalBlob);const a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+      alert('PDF wurde erstellt und heruntergeladen ('+sizeMB+' MB). Du kannst sie jetzt teilen oder drucken.');
+    }
+    console.info('DACHWERK PDF erstellt:',{size:finalBlob.size,quality:finalQuality,scale:finalScale,pages:pages.length});
+  }catch(err){
+    if(pdfRestore){try{pdfRestore()}catch(restoreErr){console.warn('PDF-Ansicht konnte nicht vollständig zurückgesetzt werden',restoreErr)}}
+    console.error('PDF-Erstellung fehlgeschlagen',err);
+    alert('PDF konnte nicht erstellt werden: '+(err?.message||'Unbekannter Fehler')+'\nBitte erneut versuchen.');
+  }finally{setButton('PDF erstellen und senden',false)}
 }
 
 async function createBackup(){
