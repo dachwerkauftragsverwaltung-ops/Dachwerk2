@@ -193,7 +193,7 @@ async function createAndSendPDF(){
       pdfPhotos.slice(start,start+4).forEach((ph,offset)=>{
         const item=document.createElement('div'); item.className='pdf-photo-item';
         const img=document.createElement('img'); img.src=ph.src; img.alt='';
-        const cap=document.createElement('div'); cap.className='pdf-photo-caption'; cap.textContent='Foto '+(start+offset+1)+' · '+(ph.name||'Baustellenfoto');
+        const cap=document.createElement('div'); cap.className='pdf-photo-caption'; cap.textContent='Foto '+(start+offset+1);
         item.append(img,cap); grid.appendChild(item);
       }); pp.appendChild(page);
     }
