@@ -1,12 +1,13 @@
 // esm.sh bundles Three.js and resolves GLTFLoader's internal `three` import.
 // This avoids the bare-specifier error produced by loading the jsDelivr example directly.
-import * as THREE from 'https://esm.sh/three@0.160.1';
-import { GLTFLoader } from 'https://esm.sh/three@0.160.1/examples/jsm/loaders/GLTFLoader.js?external=none';
+import * as THREE from 'three';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/loaders/GLTFLoader.js';
 
 (() => {
   const host = document.getElementById('loginCharacter');
   if (!host) return;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Auch bei iOS mit aktivierter Bewegungsreduktion bleibt eine sehr dezente Kopfbewegung aktiv.
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
   camera.position.set(0, 0.05, 4.5);
@@ -58,6 +59,7 @@ import { GLTFLoader } from 'https://esm.sh/three@0.160.1/examples/jsm/loaders/GL
   }, undefined, error => {
     console.error('DACHWERK 3D character could not be loaded:', error);
     host.classList.add('is-fallback');
+    console.error('DACHWERK: GLB-Ladevorgang fehlgeschlagen. Prüfe Dateipfad und GitHub-Pages-Veröffentlichung.');
   });
 
   function resize() {
@@ -74,8 +76,9 @@ import { GLTFLoader } from 'https://esm.sh/three@0.160.1/examples/jsm/loaders/GL
   function animate() {
     requestAnimationFrame(animate);
     const t = clock.getElapsedTime();
-    const idleY = reducedMotion ? 0 : Math.sin(t * 0.7) * 0.035;
-    const idleX = reducedMotion ? 0 : Math.sin(t * 0.48) * 0.012;
+    const motionScale = reducedMotion ? 0.45 : 1;
+    const idleY = Math.sin(t * 0.7) * 0.085 * motionScale;
+    const idleX = Math.sin(t * 0.48) * 0.035 * motionScale;
     currentY += (targetY + idleY - currentY) * 0.055;
     currentX += (targetX + idleX - currentX) * 0.055;
     if (head && baseHeadQuaternion) {
@@ -87,7 +90,7 @@ import { GLTFLoader } from 'https://esm.sh/three@0.160.1/examples/jsm/loaders/GL
   animate();
 
   host.addEventListener('pointermove', event => {
-    if (reducedMotion || event.pointerType === 'touch') return;
+    if (event.pointerType === 'touch') return;
     const r = host.getBoundingClientRect();
     const nx = ((event.clientX - r.left) / r.width) * 2 - 1;
     const ny = ((event.clientY - r.top) / r.height) * 2 - 1;
