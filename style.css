@@ -737,3 +737,10 @@ body:not(.authenticated)>header,body:not(.authenticated)>.appnav,body:not(.authe
  .employee-row button{grid-column:5!important;grid-row:3!important;width:36px!important;height:44px!important}
  .employee-summary,#fahrtkostenSum{min-height:42px!important;font-size:13px!important;margin-top:6px!important}
 }
+
+/* Einheitliche Summenzeilen: beide Beträge stehen in derselben rechten Summenspalte. */
+.pdf-employee-table tfoot td:first-child,.pdf-travel-table tfoot td:first-child{width:82%;text-align:right;padding-right:2mm}
+.pdf-employee-table tfoot td:last-child,.pdf-travel-table tfoot td:last-child{width:18%;text-align:right;white-space:nowrap}
+.pdf-travel-table th:nth-child(1),.pdf-travel-table td:nth-child(1){width:82%}
+.pdf-travel-table th:nth-child(2),.pdf-travel-table td:nth-child(2){width:18%}
+.pdf-employee-table tfoot td,.pdf-travel-table tfoot td{height:5mm;vertical-align:middle}
