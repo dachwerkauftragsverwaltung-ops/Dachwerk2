@@ -744,3 +744,35 @@ body:not(.authenticated)>header,body:not(.authenticated)>.appnav,body:not(.authe
 .pdf-travel-table th:nth-child(1),.pdf-travel-table td:nth-child(1){width:82%}
 .pdf-travel-table th:nth-child(2),.pdf-travel-table td:nth-child(2){width:18%}
 .pdf-employee-table tfoot td,.pdf-travel-table tfoot td{height:5mm;vertical-align:middle}
+
+/* FIX: Gemeinsames 6-Spalten-Raster für beide Summenzeilen.
+   Die Fahrtkosten-Datumszellen spannen die ersten fünf Spalten,
+   der Betrag liegt exakt in derselben sechsten Spalte wie die Arbeitsstunden. */
+#pdfTemplate .pdf-employee-table,
+#pdfTemplate .pdf-travel-table {
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+}
+#pdfTemplate .pdf-employee-table tfoot td,
+#pdfTemplate .pdf-travel-table tfoot td {
+  background: #f0f3f2 !important;
+  font-weight: 800 !important;
+  height: 5mm !important;
+  vertical-align: middle !important;
+}
+#pdfTemplate .pdf-employee-table tfoot td:first-child,
+#pdfTemplate .pdf-travel-table tfoot td:first-child {
+  text-align: right !important;
+  padding-right: 2mm !important;
+}
+#pdfTemplate .pdf-employee-table tfoot td:last-child,
+#pdfTemplate .pdf-travel-table tfoot td:last-child {
+  text-align: right !important;
+  white-space: nowrap !important;
+}
+#pdfTemplate .pdf-travel-table thead th:last-child,
+#pdfTemplate .pdf-travel-table tbody td:last-child,
+#pdfTemplate .pdf-travel-table tfoot td:last-child {
+  text-align: right;
+}

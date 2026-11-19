@@ -63,6 +63,7 @@
     <div class="pdf-section">
       <div class="pdf-bar">Mitarbeiter Zeiterfassung</div>
       <table class="pdf-table pdf-employee-table">
+        <colgroup><col style="width:15%"><col style="width:27%"><col style="width:12%"><col style="width:12%"><col style="width:16%"><col style="width:18%"></colgroup>
         <thead><tr><th>Datum</th><th>Mitarbeiter</th><th>Beginn</th><th>Ende</th><th>Pause (Min.)</th><th>Arbeitsstunden</th></tr></thead>
         <tbody id="pdfEmployees"></tbody>
         <tfoot><tr><td colspan="5">Summe Arbeitsstunden</td><td id="pdfEmployeeSum"></td></tr></tfoot>
@@ -71,8 +72,8 @@
 
     <div class="pdf-section">
       <div class="pdf-bar">Fahrtkosten</div>
-      <table class="pdf-table pdf-travel-table"><thead><tr><th>Datum</th><th>Betrag</th></tr></thead>
-      <tbody id="pdfFahrtRows"></tbody><tfoot><tr><td>Summe Fahrtkosten</td><td id="pdfFahrtSum"></td></tr></tfoot></table>
+      <table class="pdf-table pdf-travel-table"><colgroup><col style="width:15%"><col style="width:27%"><col style="width:12%"><col style="width:12%"><col style="width:16%"><col style="width:18%"></colgroup><thead><tr><th colspan="5">Datum</th><th>Betrag</th></tr></thead>
+      <tbody id="pdfFahrtRows"></tbody><tfoot><tr><td colspan="5">Summe Fahrtkosten</td><td id="pdfFahrtSum"></td></tr></tfoot></table>
     </div>
 
     <div class="pdf-section">
