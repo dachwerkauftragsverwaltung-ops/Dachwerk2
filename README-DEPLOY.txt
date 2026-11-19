@@ -25,3 +25,11 @@ PDF-Update 2026-11-19:
 - Vier Baustellenfotos pro Fotoseite bleiben erhalten; die Fotos werden nicht auf 6 oder 7 begrenzt.
 - Benötigt html2canvas und jsPDF über jsDelivr-CDN; beim ersten PDF-Erstellen ist eine Internetverbindung erforderlich.
 - Nach dem GitHub-Upload erzwingt der neue Service-Worker-Cache die Aktualisierung der App-Dateien.
+
+
+Zeiterfassung mit Arbeitstag 2026-11-19:
+- Jeder Mitarbeiter-Zeiteintrag hat jetzt ein eigenes Datumsfeld.
+- Das Datum wird im bestehenden Auftrags-JSON unter employees[].date gespeichert.
+- Es ist keine Änderung an Supabase-Tabellen oder SQL erforderlich, da die Mitarbeiterdaten bereits im JSON-Feld des Auftrags gespeichert werden.
+- Bestehende Einträge ohne Datum erhalten beim Laden das Auftragsdatum als Standard und werden beim nächsten Speichern mit Datum übernommen.
+- Das PDF zeigt das Datum je Mitarbeiter-Zeile an.
