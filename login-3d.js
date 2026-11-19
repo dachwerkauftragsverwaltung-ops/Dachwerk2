@@ -1,5 +1,7 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js';
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/loaders/GLTFLoader.js';
+// esm.sh bundles Three.js and resolves GLTFLoader's internal `three` import.
+// This avoids the bare-specifier error produced by loading the jsDelivr example directly.
+import * as THREE from 'https://esm.sh/three@0.160.1';
+import { GLTFLoader } from 'https://esm.sh/three@0.160.1/examples/jsm/loaders/GLTFLoader.js?external=none';
 
 (() => {
   const host = document.getElementById('loginCharacter');
@@ -26,6 +28,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/
   scene.add(rim);
 
   const loader = new GLTFLoader();
+  loader.setCrossOrigin('anonymous');
   let head = null;
   let baseHeadQuaternion = null;
   let model = null;
@@ -43,6 +46,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/
     model.position.set(-center.x * scale, -center.y * scale - 0.02, -center.z * scale);
     scene.add(model);
     head = model.getObjectByName('mixamorig:Head');
+    if (!head) console.warn('DACHWERK: Kopfknochen mixamorig:Head wurde im GLB nicht gefunden.');
     if (head) baseHeadQuaternion = head.quaternion.clone();
     const scaledBox = new THREE.Box3().setFromObject(model);
     const scaledSize = scaledBox.getSize(new THREE.Vector3());
