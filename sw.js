@@ -1,4 +1,4 @@
-const CACHE='dachwerk-analytics-responsive-login-20261119-v1';
+const CACHE='dachwerk-analytics-responsive-login-20261120-v2';
 const ASSETS=['./','./index.html','./style.css','./app.js','./auth.js','./manifest.webmanifest','./icon-192.png','./icon-512.png','./dachwerk-analytics-logo.jpg','./login-roofer.png','./vorlage.jpg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
