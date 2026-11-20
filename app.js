@@ -342,21 +342,28 @@ function analyticsHours(o){return (o.employees||[]).reduce((sum,e)=>sum+(parseFl
 function renderAuswertung(){
  const box=$('analyticsContent');if(!box)return;
  try{
-  const monthInput=$('analyticsMonth');
-  if(monthInput&&!monthInput.value){const d=new Date();monthInput.value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
-  const month=monthInput?.value||'';const safeOrders=Array.isArray(orders)?orders:[];
+  const monthInput=$('analyticsMonth'), mode=$('analyticsMode');
+  const now=new Date(), defaultMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  if(monthInput&&!monthInput.value)monthInput.value=defaultMonth;
+  const yearInput=$('analyticsYear'), fromInput=$('analyticsFrom'), toInput=$('analyticsTo');
+  if(yearInput&&!yearInput.value)yearInput.value=String(now.getFullYear());
+  if(fromInput&&!fromInput.value)fromInput.value=now.getFullYear()+'-01-01'; if(toInput&&!toInput.value)toInput.value=now.getFullYear()+'-12-31';
+  const viewMode=mode?.value||'month';
+  for(const [id,show] of [['analyticsMonthWrap',viewMode==='month'],['analyticsYearWrap',viewMode==='year'],['analyticsFromWrap',viewMode==='period'],['analyticsToWrap',viewMode==='period']]){const el=$(id);if(el)el.hidden=!show;}
+  let start='',end='',periodLabel=''; if(viewMode==='month'){start=(monthInput?.value||defaultMonth)+'-01';const dt=new Date(start);dt.setMonth(dt.getMonth()+1);end=dt.toISOString().slice(0,10);periodLabel=monthInput?.value||defaultMonth;}else if(viewMode==='year'){const y=yearInput?.value||String(now.getFullYear());start=y+'-01-01';end=(Number(y)+1)+'-01-01';periodLabel=y;}else{start=fromInput?.value||'';end=toInput?.value||'';periodLabel=(start&&end)?start+' bis '+end:'Zeitraum';}
+  const safeOrders=Array.isArray(orders)?orders:[];
   const normStatus=o=>String(o?.status||'offen').toLowerCase().trim();
   const hours=o=>(Array.isArray(o?.employees)?o.employees:[]).reduce((sum,e)=>sum+(Number(String(e?.hours??'0').replace(',','.'))||0),0);
   const completed=safeOrders.filter(o=>['erledigt','abgeschlossen'].includes(normStatus(o)));
   const completedTotals=completed.map(hours).filter(h=>h>0);const avg=completedTotals.length?completedTotals.reduce((a,b)=>a+b,0)/completedTotals.length:0;
   const open=safeOrders.filter(o=>['offen','bearbeitung','in bearbeitung'].includes(normStatus(o)));
   const openWorked=open.reduce((sum,o)=>sum+hours(o),0);const openPlan=avg*open.length;const remaining=Math.max(0,openPlan-openWorked);
-  const people={};safeOrders.forEach(o=>(Array.isArray(o?.employees)?o.employees:[]).forEach(e=>{if(!e?.name)return;const d=String(e.date||o.datum||'');if(month&&!d.startsWith(month))return;const h=Number(String(e.hours??'0').replace(',','.'))||0;if(h>0)people[e.name]=(people[e.name]||0)+h;}));
+  const people={};safeOrders.forEach(o=>(Array.isArray(o?.employees)?o.employees:[]).forEach(e=>{if(!e?.name)return;const d=String(e.date||o.datum||'');if(start&&d<start)return;if(end&&d>=end)return;const h=Number(String(e.hours??'0').replace(',','.'))||0;if(h>0){const base=String(e.name).trim().split(/\s+/)[0].replace(/[-–—].*$/,'').trim();if(base)people[base]=(people[base]||0)+h;}}));
   const esc=s=>typeof escapeTagesplan==='function'?escapeTagesplan(s):String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmt=n=>Number(n||0).toFixed(2).replace('.',',');
   const rows=Object.entries(people).sort((a,b)=>b[1]-a[1]).map(([n,h])=>`<div class="analytics-person"><span>${esc(n)}</span><b>${fmt(h)} Std.</b></div>`).join('');
   const openRows=open.map(o=>{const worked=hours(o),plan=avg,rest=Math.max(0,plan-worked);return `<div class="analytics-open-order"><div><b>${esc(o.kunde||o.objekt||o.auftragsnr||'Auftrag')}</b><small>${esc(o.auftragsnr||'')} · ${normStatus(o)==='bearbeitung'?'In Bearbeitung':'Offen'}</small></div><div class="analytics-order-numbers"><span>Plan <b>${fmt(plan)} h</b></span><span>Ist <b>${fmt(worked)} h</b></span><span>Rest <b>${fmt(rest)} h</b></span></div></div>`}).join('');
-  box.innerHTML=`<div class="analytics-cards"><div class="analytics-kpi"><small>Ø Stunden je Auftrag</small><strong>${fmt(avg)} h</strong><small>aus ${completedTotals.length} erledigten Aufträgen mit Stunden</small></div><div class="analytics-kpi"><small>Offene Aufträge</small><strong>${open.length}</strong><small>Offen / in Bearbeitung</small></div><div class="analytics-kpi"><small>Planstunden gesamt</small><strong>${fmt(openPlan)} h</strong><small>Ø ${fmt(avg)} h × ${open.length} Aufträge</small></div><div class="analytics-kpi"><small>Reststunden geschätzt</small><strong>${fmt(remaining)} h</strong><small>${fmt(openWorked)} h bereits erfasst</small></div></div><section class="analytics-section"><h3>Mitarbeiterstunden${month?' · '+esc(month):''}</h3>${rows||'<p class="empty-state">Für diesen Zeitraum sind keine Mitarbeiterstunden hinterlegt.</p>'}</section><section class="analytics-section"><h3>Planung offene Aufträge</h3><p class="subtext">Planstunden werden aus dem Durchschnitt erledigter Aufträge mit erfassten Stunden geschätzt. Das ist kein festes Soll.</p><div class="analytics-order-list">${openRows||'<p class="empty-state">Keine offenen Aufträge.</p>'}</div></section>`;
+  box.innerHTML=`<div class="analytics-cards"><div class="analytics-kpi"><small>Ø Stunden je Auftrag</small><strong>${fmt(avg)} h</strong><small>aus ${completedTotals.length} erledigten Aufträgen mit Stunden</small></div><div class="analytics-kpi"><small>Offene Aufträge</small><strong>${open.length}</strong><small>Offen / in Bearbeitung</small></div><div class="analytics-kpi"><small>Planstunden gesamt</small><strong>${fmt(openPlan)} h</strong><small>Ø ${fmt(avg)} h × ${open.length} Aufträge</small></div><div class="analytics-kpi"><small>Reststunden geschätzt</small><strong>${fmt(remaining)} h</strong><small>${fmt(openWorked)} h bereits erfasst</small></div></div><section class="analytics-section"><h3>Mitarbeiterstunden${periodLabel?' · '+esc(periodLabel):''}</h3>${rows||'<p class="empty-state">Für diesen Zeitraum sind keine Mitarbeiterstunden hinterlegt.</p>'}</section><section class="analytics-section"><h3>Planung offene Aufträge</h3><p class="subtext">Planstunden werden aus dem Durchschnitt erledigter Aufträge mit erfassten Stunden geschätzt. Das ist kein festes Soll.</p><div class="analytics-order-list">${openRows||'<p class="empty-state">Keine offenen Aufträge.</p>'}</div></section>`;
  }catch(err){console.error('DACHWERK Auswertung Fehler:',err);box.innerHTML='<div class="empty-state">Die Auswertung konnte nicht berechnet werden. Bitte aktualisieren oder die Auftragsdaten prüfen.</div>'}
 }
 
