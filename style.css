@@ -847,3 +847,22 @@ body:not(.authenticated)>header,body:not(.authenticated)>.appnav,body:not(.authe
 @media(orientation:landscape) and (max-height:600px) and (max-width:950px){#loginScreen .login-top{min-height:64px}#loginScreen .login-brand img{width:210px;max-height:48px}#loginScreen .login-layout{display:grid;grid-template-columns:42% 58%;grid-template-areas:"hero panel";min-height:calc(100vh - 64px);padding:12px}#loginScreen .login-hero{min-height:480px;height:auto;border-radius:18px 0 0 18px}#loginScreen .login-panel{min-height:480px;padding:20px 24px;border-radius:0 18px 18px 0}#loginScreen .login-panel-heading{margin-bottom:8px}#loginScreen .login-divider{margin:6px 0 12px}#loginScreen .login-panel form label{height:48px;margin-bottom:8px}#loginScreen .login-submit{min-height:48px}#loginScreen .login-features{margin-top:12px;padding-top:10px}}
 /* Auswertung */
 .analytics-toolbar{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin:12px 0 18px}.analytics-toolbar label{display:flex;flex-direction:column;gap:6px;font-weight:600}.analytics-toolbar input{padding:10px;border:1px solid var(--border,#d6dce2);border-radius:10px}.analytics-cards{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px}.analytics-kpi{padding:16px;border:1px solid var(--border,#d6dce2);border-radius:14px;background:var(--card,#fff);display:flex;flex-direction:column;gap:5px}.analytics-kpi small{color:var(--muted,#64748b)}.analytics-kpi strong{font-size:1.6rem}.analytics-section{margin-top:22px;padding-top:16px;border-top:1px solid var(--border,#d6dce2)}.analytics-person,.analytics-open-order{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border,#d6dce2)}.analytics-open-order{flex-direction:column;align-items:stretch}.analytics-open-order>div:first-child{display:flex;flex-direction:column;gap:3px}.analytics-open-order small{color:var(--muted,#64748b)}.analytics-order-numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.analytics-order-numbers span{padding:8px;background:var(--surface,#f4f6f8);border-radius:9px;display:flex;flex-direction:column;gap:2px;font-size:.82rem}.analytics-order-list{display:grid;gap:8px}@media(max-width:850px){.analytics-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:480px){.analytics-cards{grid-template-columns:1fr 1fr;gap:8px}.analytics-kpi{padding:12px}.analytics-kpi strong{font-size:1.25rem}.analytics-order-numbers{gap:5px}.analytics-order-numbers span{font-size:.72rem;padding:7px}}
+
+/* DACHWERK Navigation Refresh – Icons, bessere Touchflächen, Namen unverändert */
+@media screen {
+  .appnav { align-items:center; gap:7px; flex-wrap:wrap; }
+  .appnav .navbtn { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:42px; }
+  .appnav .navicon { width:18px; height:18px; flex:0 0 18px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .appnav .navlabel { display:inline; }
+  .appnav .nav-user { color:#d8e8de; margin:0 8px; font-size:13px; }
+  .appnav .navbtn:focus-visible { outline:3px solid #a9d7b8; outline-offset:2px; }
+}
+@media screen and (max-width:900px) {
+  .appnav { flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden; scrollbar-width:thin; -webkit-overflow-scrolling:touch; }
+  .appnav .navbtn { flex:0 0 auto; min-height:44px; }
+}
+@media screen and (max-width:600px) {
+  .appnav { padding:9px 10px; gap:6px; }
+  .appnav .navbtn { padding:9px 11px; font-size:13px; }
+  .appnav .navicon { width:17px; height:17px; flex-basis:17px; }
+}
