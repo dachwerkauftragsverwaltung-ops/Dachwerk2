@@ -1,35 +1,18 @@
-DACHWERK – Premium-Anmeldung
+DACHWERK – RESPONSIVE ANMELDESEITE
 
-Dieses ZIP enthält die Dateien für den GitHub-Pages-Hauptordner.
+Diese ZIP enthält einen Ordner namens Dachwerk2. Er ist passend zur GitHub-Pages-Adresse
+https://dachwerkauftragsverwaltung-ops.github.io/Dachwerk2/
 
-Einspielen:
-1. Vorhandene Dateien im Repository sichern.
-2. ALLE Dateien aus diesem ZIP (außer dieser README, falls nicht benötigt) in den Hauptordner des Repositorys Dachwerk.Fertig hochladen und vorhandene Dateien ersetzen.
-3. Commit durchführen und warten, bis GitHub Pages veröffentlicht hat.
-4. Auf iPhone Safari die Seite neu laden. Bei alter Darstellung ggf. Tab schließen und URL erneut öffnen.
+UPLOAD
+1. ZIP entpacken.
+2. Den Ordnerinhalt aus Dachwerk2 in den bereits vorhandenen Ordner Dachwerk2 im Repository kopieren.
+3. Vorhandene Dateien überschreiben. Keine zweite Unterordnerebene Dachwerk2/Dachwerk2 anlegen.
+4. Commit auf main durchführen und GitHub Pages die Veröffentlichung abwarten lassen.
+5. Die oben genannte /Dachwerk2/-Adresse in Safari neu öffnen.
 
-Enthalten:
-- Professionelles responsive Login-Layout für Computer und Smartphone
-- Passwort-Auge zum Anzeigen/Verbergen
-- Kurzer grüner Anmelde-Erfolgseffekt
-- Dachdecker-Foto als lokale Datei login-roofer.png
-- Bestehende App-, Supabase-, PDF- und Fotospeicher-Dateien aus der bereitgestellten Ausgangsversion
-
-Hinweis: Diese ZIP aktualisiert die Login-Oberfläche. Sie verändert keine Supabase-RLS-Regeln und kann die Funktion auf echten Geräten nicht ersetzen/testen, ohne sie auf GitHub Pages aufzurufen.
-
-
-PDF-Update 2026-11-19:
-- PDF wird nicht mehr über den Druckdialog erzeugt, sondern als echte PDF-Datei erstellt.
-- Alle PDF-Seiten inklusive Fotoseiten werden als JPEG-Seiten eingebettet und stufenweise komprimiert.
-- Harte Obergrenze: 2 MiB. Wenn sie nach allen Komprimierungsstufen überschritten wird, wird die Datei nicht freigegeben.
-- Vier Baustellenfotos pro Fotoseite bleiben erhalten; die Fotos werden nicht auf 6 oder 7 begrenzt.
-- Benötigt html2canvas und jsPDF über jsDelivr-CDN; beim ersten PDF-Erstellen ist eine Internetverbindung erforderlich.
-- Nach dem GitHub-Upload erzwingt der neue Service-Worker-Cache die Aktualisierung der App-Dateien.
-
-
-Zeiterfassung mit Arbeitstag 2026-11-19:
-- Jeder Mitarbeiter-Zeiteintrag hat jetzt ein eigenes Datumsfeld.
-- Das Datum wird im bestehenden Auftrags-JSON unter employees[].date gespeichert.
-- Es ist keine Änderung an Supabase-Tabellen oder SQL erforderlich, da die Mitarbeiterdaten bereits im JSON-Feld des Auftrags gespeichert werden.
-- Bestehende Einträge ohne Datum erhalten beim Laden das Auftragsdatum als Standard und werden beim nächsten Speichern mit Datum übernommen.
-- Das PDF zeigt das Datum je Mitarbeiter-Zeile an.
+WICHTIG
+- Die bestehende Supabase-Anmeldung, Registrierung, Passwortanzeige und App-Dateien bleiben erhalten.
+- Die neue Login-Oberfläche ist responsiv für Desktop, Tablet und Smartphone.
+- Der bisherige 3D-Loader wurde aus dem Login entfernt; stattdessen wird das DACHWERK-Held-Bild zuverlässig als lokales Motiv gezeigt.
+- Der Service Worker wurde auf die tatsächlich vorhandenen Dateien angepasst und erhält einen neuen Cache-Namen.
+- Keine Supabase-Datenbankänderung ist für dieses Login-Redesign erforderlich.

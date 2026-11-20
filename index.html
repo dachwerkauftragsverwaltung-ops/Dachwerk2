@@ -1,26 +1,34 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>DACHWERK | WE FIX IT – Auftragsverwaltung</title><meta name="theme-color" content="#2d7b54"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png"><link rel="stylesheet" href="style.css"><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js"}}</script></head><body><div id="loginScreen" class="login-screen">
-  <div class="login-top">
-    <div class="login-brand"><img src="dachwerk-logo.jpg" alt="DACHWERK – JONAS DITTERT | BAUNATAL – we fix it"></div>
-    <span>PROFESSIONELLE AUFTRAGSVERWALTUNG</span>
-  </div>
-  <div class="login-layout">
-    <section class="login-panel">
-      <div class="login-lock" aria-hidden="true">⌑</div>
-      <h1>Herzlich willkommen</h1>
-      <p class="login-sub">Melde dich an, um auf deine Aufträge, Fotos und Stammdaten zuzugreifen.</p>
+  <header class="login-top">
+    <div class="login-brand"><img src="dachwerk-logo.jpg" alt="DACHWERK – Jonas Dittert | Baunatal – we fix it"></div>
+    <div class="login-top-note"><span class="login-live-dot"></span> DIGITALE AUFTRAGSVERWALTUNG</div>
+  </header>
+  <main class="login-layout">
+    <section class="login-panel" aria-labelledby="loginTitle">
+      <div class="login-panel-heading">
+        <span class="login-panel-icon" aria-hidden="true">▱</span>
+        <div><p class="login-eyebrow">DACHWERK · WE FIX IT</p><h1 id="loginTitle">Auftragsverwaltung</h1><p class="login-sub">Planen. Verwalten. Dokumentieren.</p></div>
+      </div>
+      <div class="login-divider"><span></span></div>
       <form id="authForm">
         <label for="authEmail"><span class="field-icon" aria-hidden="true">✉</span><span class="sr-only">E-Mail-Adresse</span><input id="authEmail" type="email" autocomplete="email" placeholder="E-Mail-Adresse" required></label>
         <label class="password-field" for="authPassword"><span class="field-icon" aria-hidden="true">▣</span><span class="sr-only">Passwort</span><input id="authPassword" type="password" autocomplete="current-password" placeholder="Passwort" minlength="6" required><button id="togglePassword" class="password-toggle" type="button" aria-label="Passwort anzeigen" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></label>
         <button class="login-submit" type="submit" id="loginSubmit"><span class="submit-icon" aria-hidden="true">↪</span><span>Anmelden</span></button>
       </form>
       <div class="login-or"><span>oder</span></div>
-      <button class="login-register" id="registerBtn" type="button"><span aria-hidden="true">♙＋</span> Neuen Account anfordern</button>
-      <p class="login-secure">Zugang ist erst nach Freigabe durch den Administrator möglich.</p>
+      <button class="login-register" id="registerBtn" type="button"><span aria-hidden="true">＋</span> Neuen Account anfordern</button>
+      <p class="login-secure"><span aria-hidden="true">🔒</span> Zugang nur für freigegebene Mitarbeiter.</p>
       <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
-      <div class="login-features"><div><b>☷</b><span>Aufträge verwalten</span></div><div><b>◎</b><span>Baustellenfotos</span></div><div><b>▤</b><span>Serviceberichte</span></div><div><b>⚙</b><span>Material &amp; Stammdaten</span></div></div>
+      <div class="login-features" aria-label="App-Funktionen"><div><b>☑</b><span>Aufträge</span></div><div><b>♧</b><span>Mitarbeiter</span></div><div><b>▣</b><span>Fotos</span></div><div><b>▤</b><span>Berichte</span></div></div>
+      <p class="login-footer">Sicher anmelden · Alles im Blick · Gemeinsam stark</p>
     </section>
-    <div class="login-hero"><div id="loginCharacter" class="login-character" aria-label="DACHWERK 3D-Charakter"><img class="login-character-fallback" src="login-roofer.png" alt="DACHWERK Dachdecker"></div><div class="hero-caption"><b>DACHWERK · WE FIX IT</b><span>Alle Aufträge. Ein Team. Ein Überblick.</span></div></div>
-  </div>
+    <section class="login-hero" aria-label="DACHWERK Dachdecker-Held">
+      <div class="login-character"><img class="login-character-fallback" src="login-roofer.png" alt="DACHWERK-Held auf dem Dach"></div>
+      <div class="hero-shade"></div>
+      <div class="hero-caption"><b>DEIN TEAM. DEINE AUFTRÄGE.</b><span>Handwerk. Organisation. Überblick.</span></div>
+      <div class="hero-stamp"><span>WE FIX IT</span><small>JONAS DITTERT · BAUNATAL</small></div>
+    </section>
+  </main>
   <div id="loginBurst" class="login-burst" aria-hidden="true"><div class="burst-rays"></div><div class="burst-check">✓</div><strong>Anmeldung erfolgreich!</strong><span>Schön, dass du da bist!</span></div>
 </div><div id="appShell" hidden>
 <header><div class="brand"><img src="dachwerk-logo.jpg" alt="DACHWERK"></div><div class="headright">JONAS DITTERT | BAUNATAL<br>Lübecker Straße 21 · 34225 Baunatal<br>0151 412 055 88 · info@dachwerk.biz<br>www.dachwerk.biz <b class="print-service-title">DACHWERK<br>AUFTRAG / SERVICEBERICHT</b></div></header>
@@ -112,4 +120,4 @@
     <div class="consumption-actions"><button type="button" class="voice-button" onclick="voiceConsumption()">🎙️ Spracheingabe</button><span></span><button type="button" onclick="closeConsumptionEditor(false)">Abbrechen</button><button type="button" class="primary" onclick="closeConsumptionEditor(true)">Übernehmen</button></div>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script><script src="auth.js"></script><script type="module" src="login-3d.js"></script></div></body></html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script><script src="auth.js"></script></div></body></html>
