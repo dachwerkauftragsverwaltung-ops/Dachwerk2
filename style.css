@@ -930,3 +930,11 @@ body:not(.authenticated)>header,body:not(.authenticated)>.appnav,body:not(.authe
   body > header .headright { font-size:9px !important; }
   .appnav .navbtn { padding:8px 9px !important; font-size:12px; }
 }
+/* Analytics: completed orders overlay (blue dashed) */
+.chart-done-line{fill:none;stroke:#60a5fa;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:7 6}
+.chart-done-dot{fill:#bfdbfe;stroke:#2563eb;stroke-width:2}
+.analytics-chart-legend{display:flex;flex-wrap:wrap;gap:14px;justify-content:flex-end;margin-top:8px;color:#b7c9bf;font-size:.82rem}
+.analytics-chart-legend span{display:inline-flex;align-items:center;gap:6px}
+.analytics-chart-legend i{display:inline-block;width:24px;height:3px;border-radius:3px}
+.analytics-chart-legend .legend-created{background:#4ad486}
+.analytics-chart-legend .legend-done{background:repeating-linear-gradient(90deg,#60a5fa 0 7px,transparent 7px 13px)}
