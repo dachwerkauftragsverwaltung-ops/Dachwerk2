@@ -938,3 +938,29 @@ body:not(.authenticated)>header,body:not(.authenticated)>.appnav,body:not(.authe
 .analytics-chart-legend i{display:inline-block;width:24px;height:3px;border-radius:3px}
 .analytics-chart-legend .legend-created{background:#4ad486}
 .analytics-chart-legend .legend-done{background:repeating-linear-gradient(90deg,#60a5fa 0 7px,transparent 7px 13px)}
+/* Corrected premium green app header: screen only; print/PDF header stays original */
+@media screen {
+ body.authenticated > header {background:linear-gradient(115deg,#123d2a,#1e6845 58%,#164b32)!important;color:#fff!important;border-bottom:1px solid #0f3925!important;box-shadow:0 8px 24px rgba(9,39,24,.22)!important;}
+ body.authenticated > header .brand {background:transparent!important;padding:0!important;}
+ body.authenticated > header .brand img {filter:none!important;display:block!important;object-fit:contain!important;}
+ body.authenticated > header .headright {color:#eaf5ee!important;text-shadow:0 1px 1px rgba(0,0,0,.16)!important;}
+ body.authenticated > header .headright b.print-service-title {color:#fff!important;}
+ body.authenticated > .appnav {background:linear-gradient(110deg,#0e3524,#205b3c 60%,#153e2a)!important;}
+ body.authenticated > .appnav .navbtn {display:inline-flex!important;align-items:center!important;gap:8px!important;}
+ body.authenticated > .appnav .navbtn svg {width:17px;height:17px;flex:0 0 17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+ body.authenticated > .appnav .navbtn:not(.active) {color:#f5fbf7!important;background:rgba(255,255,255,.09)!important;border-color:rgba(255,255,255,.22)!important;}
+ body.authenticated > .appnav .navbtn.active {color:#145236!important;background:#fff!important;border-color:#fff!important;}
+}
+/* Corrected premium green app header: screen only; print/PDF header stays original */
+@media screen {
+ body.authenticated > header {background:linear-gradient(115deg,#123d2a,#1e6845 58%,#164b32)!important;color:#fff!important;border-bottom:1px solid #0f3925!important;box-shadow:0 8px 24px rgba(9,39,24,.22)!important;}
+ body.authenticated > header .brand {background:transparent!important;padding:0!important;}
+ body.authenticated > header .brand img {filter:none!important;display:block!important;object-fit:contain!important;}
+ body.authenticated > header .headright {color:#eaf5ee!important;text-shadow:0 1px 1px rgba(0,0,0,.16)!important;}
+ body.authenticated > header .headright b.print-service-title {color:#fff!important;}
+ body.authenticated > .appnav {background:linear-gradient(110deg,#0e3524,#205b3c 60%,#153e2a)!important;}
+ body.authenticated > .appnav .navbtn {display:inline-flex!important;align-items:center!important;gap:8px!important;}
+ body.authenticated > .appnav .navbtn svg {width:17px;height:17px;flex:0 0 17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+ body.authenticated > .appnav .navbtn:not(.active) {color:#f5fbf7!important;background:rgba(255,255,255,.09)!important;border-color:rgba(255,255,255,.22)!important;}
+ body.authenticated > .appnav .navbtn.active {color:#145236!important;background:#fff!important;border-color:#fff!important;}
+}
